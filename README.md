@@ -1,0 +1,57 @@
+# Programación Asistida por IA · Jornada ISC'2026 · ITSVA
+
+Sitio del taller (17–19 de noviembre de 2026). HTML + JavaScript + Tailwind **compilado y guardado en el repo** (`assets/tailwind.css`). Sin CDN, sin build para publicar: se sube tal cual.
+
+Solo si agregas clases de Tailwind nuevas en `index.html`, `app.js` o `data.js` hay que regenerar el CSS (requiere Node una sola vez):
+```bash
+npx -p tailwindcss@3.4.17 -p @tailwindcss/forms@0.5.9 tailwindcss -c tools/tailwind.config.js -i tools/tailwind.input.css -o assets/tailwind.css --minify
+```
+
+## Publicar en GitHub Pages
+1. Crea un repositorio (por ejemplo `taller-ia-itsva`) y sube el contenido de esta carpeta a la rama `main`.
+2. Settings → Pages → Source: *Deploy from a branch* → rama `main`, carpeta `/ (root)` → Save.
+3. En uno o dos minutos queda en `https://TU-USUARIO.github.io/taller-ia-itsva/`.
+
+Por comandos:
+```bash
+git init && git add . && git commit -m "Taller IA ITSVA"
+git branch -M main
+git remote add origin https://github.com/TU-USUARIO/taller-ia-itsva.git
+git push -u origin main
+```
+
+## Restricciones del laboratorio (ya están aplicadas)
+- **Sin modo Agente.** La configuración generada solo declara los roles `chat` y `edit`. Los modelos pequeños no manejan herramientas y en modo agente se cuelgan.
+- **Modelos chicos.** Las tres opciones son `qwen2.5-coder` en 0.5b, 1.5b y 3b. El valor por omisión es el 1.5b.
+- **Autocompletado apagado por omisión.** Es lo primero que traba una laptop limitada; el alumno lo activa solo si le responde rápido.
+
+## Retos autoevaluables
+Siete ejercicios traen un recuadro donde el alumno pega el código que le dio la IA y lo ejecuta contra casos de prueba. Todo corre en el navegador del alumno: dentro de un iframe `sandbox` (origen opaco, sin acceso a la página ni a su localStorage) y, dentro de él, en un Web Worker, para que un bucle infinito no congele la pestaña y el límite de 4 segundos pueda detenerlo. No se envía nada a ningún servidor. Cada caso muestra ✓/✗ con lo esperado y lo devuelto; al pasar todos, el ejercicio se marca como hecho.
+
+## Modo instructor
+Agrega `?i=1` a la dirección (`.../index.html?i=1#d2`) para ver notas por día y por ejercicio, los bugs sembrados y la solución de referencia de cada reto (con botón para cargarla en el editor). No es seguridad: cualquiera que conozca el parámetro lo ve.
+
+También puedes enlazar un ejercicio directo: `#ej-e6` abre el día correspondiente y baja hasta él.
+
+## Editar contenido
+- `assets/data.js` — horarios, textos, ejercicios, casos de prueba y soluciones de referencia de los retos. Todo el contenido vive aquí.
+- `assets/app.js` — lógica de la página y el ejecutor de retos.
+- `assets/tailwind.css` — CSS compilado (no lo edites a mano; regenera con el comando de arriba).
+- `tools/` — configuración de Tailwind para regenerar el CSS y `verify.js`, la prueba automática de los retos.
+
+## Verificar los retos (opcional)
+`tools/verify.js` abre el sitio en Chrome con Playwright y, para cada reto, comprueba que una solución correcta pase, que una incorrecta falle, que un bucle infinito lo detenga el límite de 4 s, y que progreso y código persistan. Requiere Node:
+```bash
+npm i -g playwright && node tools/verify.js .
+```
+- `practicas/` — archivos que descargan los alumnos.
+
+Si cambias algo en `practicas/`, regenera el zip:
+```bash
+cd practicas && zip -r ../practicas.zip . && cd ..
+```
+
+## Bugs sembrados a propósito (no los "arregles")
+- `e06-debug.js` — 4 errores de lógica.
+- `e08-funciones.js` — 3 funciones que no cumplen lo que promete su comentario.
+- `e10-seguridad.js` — XSS, eval, credenciales en el código, autorización por localStorage.

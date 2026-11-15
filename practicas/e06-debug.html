@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E6 · Depuración</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; color: #1e293b; }
+    h1 { font-size: 1.4rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    td { padding: .6rem .4rem; border-bottom: 1px solid #e2e8f0; }
+    td:last-child { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .esperado { margin-top: 1.5rem; padding: 1rem; background: #f1f5f9; border-radius: .5rem; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>Reporte de ventas</h1>
+  <p>Ventas registradas: 100, 600, 300, 150, 100</p>
+  <table>
+    <tr><td>Total</td><td id="total">—</td></tr>
+    <tr><td>Promedio</td><td id="promedio">—</td></tr>
+    <tr><td>Mayor venta</td><td id="mayor">—</td></tr>
+    <tr><td>Ventas sobre el promedio</td><td id="sobre">—</td></tr>
+  </table>
+  <div class="esperado">
+    <b>Resultado correcto esperado:</b> Total 1250 · Promedio 250 · Mayor venta 600 · Ventas sobre el promedio 2
+  </div>
+  <script src="e06-debug.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* Estilos base del proyecto. Puedes mejorarlos con ayuda de la IA. */
+:root { --color: #4f46e5; }
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+  margin: 0;
+  padding: 2rem 1rem;
+}
+
+main {
+  max-width: 34rem;
+  margin: 0 auto;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: .75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+h1 { font-size: 1.5rem; margin-top: 0; }
+
+#form-tarea { display: flex; gap: .5rem; margin-bottom: 1rem; }
+
+input[type="text"] {
+  flex: 1;
+  padding: .6rem .75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: .5rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: .6rem 1rem;
+  border: 0;
+  border-radius: .5rem;
+  background: var(--color);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.1); }
+
+ul { list-style: none; padding: 0; margin: 0; }
+
+li {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .7rem .2rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+li.completada span { text-decoration: line-through; color: #94a3b8; }
+
+#vacio { color: #94a3b8; text-align: center; padding: 1rem 0; }

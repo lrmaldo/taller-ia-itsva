@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E10 · Seguridad</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; color: #1e293b; }
+    h1 { font-size: 1.4rem; }
+    fieldset { margin: 1rem 0; border: 1px solid #e2e8f0; border-radius: .5rem; padding: 1rem; }
+    legend { font-weight: 600; padding: 0 .4rem; }
+    input { padding: .45rem; border: 1px solid #cbd5e1; border-radius: .35rem; margin: .2rem 0; width: 100%; box-sizing: border-box; }
+    button { padding: .5rem 1rem; border: 0; border-radius: .35rem; background: #4f46e5; color: #fff; cursor: pointer; margin-top: .5rem; }
+    .c { padding: .4rem 0; border-bottom: 1px solid #f1f5f9; }
+    .aviso { background: #fef3c7; border: 1px solid #fcd34d; padding: .8rem; border-radius: .5rem; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <h1>Mini sitio con fallas de seguridad</h1>
+  <p class="aviso">Material de práctica. El código tiene vulnerabilidades puestas a propósito; úsalo solo aquí.</p>
+
+  <fieldset>
+    <legend>Comentarios</legend>
+    <input id="autor" placeholder="Tu nombre">
+    <input id="comentario" placeholder="Tu comentario">
+    <button onclick="publicarComentario()">Publicar</button>
+    <div id="lista"></div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Acceso</legend>
+    <input id="usuario" placeholder="Usuario">
+    <input id="password" type="password" placeholder="Contraseña">
+    <button onclick="iniciarSesion()">Entrar</button>
+    <p id="estado"></p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Calculadora</legend>
+    <input id="expresion" placeholder="2 + 3 * 4">
+    <button onclick="calcular()">Calcular</button>
+    <p id="resultado"></p>
+  </fieldset>
+
+  <script src="e10-seguridad.js"></script>
+</body>
+</html>
