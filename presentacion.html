@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programación asistida por IA · Presentación · ITSVA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Escenario fijo 1920×1080 escalado al viewport; una diapositiva activa a la vez.
+   Teclas: ← → espacio · N notas · F pantalla completa. Hash #sN enlaza una diapositiva. */
+:root{
+  color-scheme: dark;
+  --ink:#0b1220; --ink-2:#121c31; --ink-3:#18243d; --line:#26365a;
+  --paper:#e8edf5; --muted:#93a0b8; --dim:#5d6b86;
+  --orange:#f28c28; --blue:#4a94ff; --green:#3fbf6a; --brown:#b07a45; --slate:#8a94a6;
+  --alert:#ff6b5e; --aqua:#3cc6c0; --violet:#a98bff;
+  --display:'Archivo','Arial Narrow','Helvetica Neue',Arial,sans-serif;
+  --body:'IBM Plex Sans','Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+}
+html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--body);overflow:hidden;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+h1,h2,h3,p{margin:0}
+.viewport{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden}
+.stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;transform:translate(-50%,-50%)}
+
+/* ---------- diapositivas ---------- */
+.slide{position:absolute;inset:0;padding:120px 128px 150px;display:flex;flex-direction:column;gap:44px;
+  opacity:0;visibility:hidden;transform:translateX(40px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s linear .55s;background:var(--ink)}
+.slide.active{opacity:1;visibility:visible;transform:none;transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1),visibility 0s}
+.slide.prev{transform:translateX(-40px)}
+.slide .notes{display:none}
+
+.eyebrow{font-family:var(--mono);font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:16px}
+.eyebrow::before{content:"";width:44px;height:3px;background:currentColor}
+.h-xl{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:124px;line-height:.98;letter-spacing:-.01em;text-wrap:balance}
+.h-l{font-family:var(--display);font-stretch:108%;font-weight:750;font-size:76px;line-height:1.04;letter-spacing:-.005em;text-wrap:balance;max-width:1500px}
+.h-m{font-family:var(--display);font-stretch:100%;font-weight:700;font-size:36px;line-height:1.15}
+.lead{font-size:34px;line-height:1.45;color:var(--muted);max-width:1250px}
+.body{font-size:27px;line-height:1.5;color:var(--muted)}
+.mono{font-family:var(--mono)}
+.o{color:var(--orange)} .b{color:var(--blue)} .g{color:var(--green)} .a{color:var(--alert)} .v{color:var(--violet)}
+.dim-t{color:var(--dim)}
+
+/* revelado escalonado */
+.r{opacity:0;transform:translateY(26px)}
+.active .r{animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes grow{to{transform:scaleX(1)}}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- portada ---------- */
+#fiber,#fiber2{position:absolute;inset:0;width:1920px;height:1080px}
+.cover{justify-content:flex-end;gap:36px}
+.cover .h-xl{max-width:1500px}
+.cover-meta{display:flex;gap:64px;align-items:flex-end;border-top:1px solid var(--line);padding-top:32px}
+.cover-meta div{display:flex;flex-direction:column;gap:6px}
+.cover-meta .k{font-family:var(--mono);font-size:19px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.cover-meta .v{font-size:29px;font-weight:500;color:var(--paper)}
+
+/* ---------- divisores ---------- */
+.divider{justify-content:center;gap:28px}
+.divider .num{font-family:var(--display);font-stretch:125%;font-weight:900;font-size:260px;line-height:.8;color:transparent;-webkit-text-stroke:2px var(--line)}
+.divider .h-xl{font-size:110px}
+.divider .strand{position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--orange) 40%,transparent);opacity:0}
+.divider.active .strand{animation:strand 2.2s ease-out .2s forwards}
+@keyframes strand{0%{opacity:0;transform:scaleX(0)}40%{opacity:.6}100%{opacity:.18;transform:scaleX(1)}}
+
+/* ---------- quién soy ---------- */
+.me{display:grid;grid-template-columns:1fr 760px;gap:80px;align-items:start;flex:1}
+.me-id{display:flex;flex-direction:column;gap:30px;min-width:0}
+.skills{display:flex;flex-direction:column;gap:22px}
+.skill{border-left:4px solid var(--c);background:var(--ink-2);border-radius:0 14px 14px 0;padding:26px 30px;display:flex;flex-direction:column;gap:16px}
+.skill h3{font-family:var(--display);font-weight:700;font-size:32px}
+.skill p{font-size:24px;line-height:1.45;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{font-family:var(--mono);font-size:20px;padding:7px 12px;border-radius:5px;background:var(--ink-3);color:var(--paper)}
+
+/* ---------- agenda 3 días ---------- */
+.days{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.day{background:var(--ink-2);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:16px;padding:28px 30px;display:flex;flex-direction:column;gap:14px}
+.day .k{font-family:var(--mono);font-size:19px;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.day h3{font-family:var(--display);font-weight:700;font-size:36px;line-height:1.1}
+.day ul{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.day li{display:grid;grid-template-columns:120px 1fr;gap:14px;font-size:22px;line-height:1.35;color:var(--muted)}
+.day li b{font-family:var(--mono);font-weight:500;color:var(--dim);font-size:19px;padding-top:2px}
+.day li.hot{color:var(--paper)}
+.day li.hot b{color:var(--c)}
+.ag-bar{display:flex;height:16px;gap:4px}
+.ag-bar span{flex:var(--w) 1 0;background:var(--c);border-radius:4px;transform-origin:left;transform:scaleX(0)}
+.active .ag-bar span{animation:grow .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d)}
+
+/* ---------- nube vs local ---------- */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.vs-col{background:var(--ink-2);border:1px solid var(--line);border-radius:18px;padding:26px 30px 30px;display:flex;flex-direction:column;gap:12px}
+.vs-col.local{border-color:var(--green)}
+.vs-svg{width:100%;height:auto}
+.vs-svg .vt{font-family:var(--body);font-size:24px;font-weight:600;fill:var(--paper)}
+.vs-svg .vs-sub{font-family:var(--mono);font-size:18px;fill:var(--muted)}
+.vs-col h3{font-family:var(--display);font-weight:700;font-size:34px}
+.vs-list{margin:0;padding-left:26px;font-size:24px;line-height:1.6;color:var(--muted)}
+
+/* ---------- LLM: siguiente token ---------- */
+.tok{display:grid;grid-template-columns:1fr 640px;gap:64px;align-items:start}
+.tok-left{display:flex;flex-direction:column;gap:26px}
+.tok-prompt{background:#070c16;border:1px solid var(--line);border-radius:14px;padding:26px 30px;font-size:34px;font-family:var(--mono)}
+.tok-prompt .kw{color:var(--blue)}
+.tok-cur{color:var(--orange);animation:blink 1s steps(1) infinite}
+.tok-bars{display:flex;flex-direction:column;gap:14px}
+.tb{display:grid;grid-template-columns:200px 1fr 90px;gap:18px;align-items:center;font-size:28px}
+.tb span{font-family:var(--mono);color:var(--muted)}
+.tb i{height:30px;border-radius:6px;background:var(--line);width:calc(var(--p) * 1%);transform-origin:left;transform:scaleX(0)}
+.active .tb i{animation:grow .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d)}
+.tb b{font-family:var(--mono);font-weight:500;color:var(--muted);font-size:24px}
+.tb.top span,.tb.top b{color:var(--orange)} .tb.top i{background:var(--orange)}
+.tok-note{font-size:20px;color:var(--dim)}
+.tok-right{display:flex;flex-direction:column;gap:18px}
+.tk{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:22px 26px;display:flex;flex-direction:column;gap:8px}
+.tk .k{font-family:var(--mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
+.tk p{font-size:24px;line-height:1.45;color:var(--muted)} .tk p b{color:var(--paper)}
+
+/* ---------- LLM: tokens y ventana de contexto ---------- */
+.ctx{display:flex;flex-direction:column;gap:34px}
+.toks{display:flex;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:26px}
+.toks span{padding:10px 14px;border-radius:8px;background:var(--ink-2);border:1px solid var(--line);opacity:0;transform:scale(.6)}
+.active .toks span{animation:pop .45s cubic-bezier(.2,.8,.2,1.3) forwards;animation-delay:calc(.5s + var(--i) * .09s)}
+.toks span:nth-child(odd){color:var(--blue)} .toks span:nth-child(even){color:var(--aqua)}
+@keyframes pop{to{opacity:1;transform:none}}
+.toks-note{font-size:22px;color:var(--dim);display:flex;gap:12px;align-items:center}
+.window{position:relative;padding:30px 0 10px}
+.win-track{display:grid;grid-template-columns:repeat(14,1fr);gap:8px}
+.win-track span{height:54px;border-radius:8px;background:var(--ink-3);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:19px;color:var(--dim);transition:opacity .4s}
+.win-track span.old{opacity:.25}
+.win-frame{position:absolute;top:18px;height:78px;border:3px solid var(--orange);border-radius:12px;width:calc((100% - 8px * 13) / 14 * 6 + 8px * 5 + 24px);left:-12px;box-shadow:0 0 0 6px rgba(242,140,40,.12)}
+.active .win-frame{animation:slide 7s cubic-bezier(.4,0,.2,1) 2.4s infinite alternate}
+@keyframes slide{to{transform:translateX(calc((100% - 24px) / 6 * 8 + 8px * 8))}}
+.win-frame::after{content:"lo que el modelo ve ahora";position:absolute;left:0;top:-36px;font-family:var(--mono);font-size:17px;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);white-space:nowrap}
+.win-cap{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:10px}
+.win-cap div{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:20px 26px;font-size:24px;line-height:1.45;color:var(--muted)}
+.win-cap b{color:var(--paper)}
+
+/* ---------- LLM: entrenamiento → pesos ---------- */
+.train{width:1664px;height:470px}
+.train rect.box{fill:var(--ink-2);stroke:var(--line);stroke-width:2}
+.train rect.main{fill:#0e1626;stroke:var(--orange);stroke-width:3}
+.train .k{font-family:var(--mono);font-size:17px;letter-spacing:.12em;fill:var(--dim)}
+.train .t{font-family:var(--body);font-size:22px;font-weight:500;fill:var(--paper)}
+.train .s{font-family:var(--mono);font-size:18px;fill:var(--muted)}
+.train .big{font-family:var(--display);font-weight:800;font-size:38px;fill:var(--orange)}
+.train .l{fill:none;stroke:var(--line);stroke-width:3}
+.train .w{fill:var(--line);opacity:.35}
+.active .train .w{animation:light 2.6s ease-in-out infinite;animation-delay:calc(var(--i) * .13s)}
+@keyframes light{0%,100%{fill:var(--line);opacity:.35}50%{fill:var(--orange);opacity:1}}
+.train .gear{transform-box:fill-box;transform-origin:center}
+.active .train .gear{animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- LLM: Ollama ---------- */
+.olla{width:1664px;height:440px}
+.olla rect{fill:var(--ink-2);stroke:var(--line);stroke-width:2}
+.olla rect.ol-main{fill:#0e1626;stroke:var(--orange);stroke-width:3}
+.olla rect.ol-in{fill:var(--ink-3)} .olla rect.ol-in.hl{stroke:var(--orange)} .olla rect.me{stroke:var(--green)}
+.olla .ol-l{fill:none;stroke:var(--line);stroke-width:3}
+.olla .ol-k{font-family:var(--mono);font-size:17px;letter-spacing:.12em;fill:var(--dim)}
+.olla .ol-t{font-family:var(--body);font-size:22px;font-weight:500;fill:var(--paper)}
+.olla .ol-s{font-family:var(--mono);font-size:18px;fill:var(--muted)}
+.olla .ol-c{font-family:var(--mono);font-size:20px;fill:var(--orange)}
+.olla .ol-big{font-family:var(--display);font-weight:800;font-size:40px;fill:var(--orange)}
+
+/* ---------- LLM: memoria ---------- */
+.ram{position:relative;display:flex;flex-direction:column;gap:16px;padding-top:40px;--lab:520px}
+.ram-axis{position:absolute;left:var(--lab);right:0;top:0;height:100%;pointer-events:none}
+.ram-axis span{position:absolute;left:calc(var(--x) * 1%);top:0;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:18px;color:var(--dim)}
+.ram-axis span::after{content:"";position:absolute;left:50%;top:30px;height:340px;border-left:1px dashed var(--line)}
+.ram-axis span:last-child::after{left:100%}
+.ram-row{display:grid;grid-template-columns:var(--lab) 1fr;align-items:center}
+.ram-n{font-family:var(--mono);font-size:24px;color:var(--paper);display:flex;flex-direction:column;gap:2px}
+.ram-n small{font-family:var(--body);font-size:18px;color:var(--dim)}
+.ram-t{display:flex;align-items:center;gap:14px}
+.ram-t i{display:block;height:34px;width:calc(var(--w) * 1%);background:var(--blue);border-radius:0 6px 6px 0;transform-origin:left;transform:scaleX(0)}
+.active .ram-t i{animation:grow .8s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d)}
+.ram-t b{font-family:var(--mono);font-weight:500;font-size:22px;color:var(--muted)}
+.ram-row.hot .ram-t i{background:var(--orange)} .ram-row.hot .ram-n,.ram-row.hot .ram-t b{color:var(--orange)}
+.ram-row.ok .ram-t i{background:var(--green)}
+.ram-line{margin-left:var(--lab);display:flex;justify-content:flex-end;border-top:3px solid var(--alert);padding-top:10px}
+.ram-line span{font-size:20px;color:var(--alert)}
+.ram-foot .body{font-size:22px;max-width:1400px}
+
+/* ---------- LLM: alucinación ---------- */
+.halu{display:grid;grid-template-columns:1fr 620px;gap:60px;align-items:start}
+.chat{display:flex;flex-direction:column;gap:16px}
+.q{align-self:flex-end;background:#1d3b6e;border-radius:18px 18px 4px 18px;padding:18px 26px;font-size:27px;max-width:85%}
+.ai{background:#070c16;border:1px solid var(--line);border-radius:14px;padding:26px 30px;font-family:var(--mono);font-size:21px;line-height:1.7;color:var(--paper);white-space:pre-wrap;overflow:hidden;position:relative;min-height:180px}
+.ai .cur{display:inline-block;width:12px;height:24px;background:var(--orange);vertical-align:-4px;animation:blink 1s steps(1) infinite}
+.stamp{position:absolute;right:26px;bottom:22px;transform:rotate(-6deg) scale(2);opacity:0;border:4px solid var(--alert);color:var(--alert);border-radius:10px;padding:8px 18px;font-family:var(--display);font-weight:800;font-size:30px;letter-spacing:.04em;text-transform:uppercase;background:rgba(7,12,22,.85)}
+.active .stamp{animation:stamp .5s cubic-bezier(.2,.8,.2,1.2) forwards;animation-delay:var(--d,5.5s)}
+@keyframes stamp{to{opacity:1;transform:rotate(-6deg) scale(1)}}
+.halu-right{display:flex;flex-direction:column;gap:18px}
+.lim-col{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:28px 30px;display:flex;flex-direction:column;gap:16px}
+.lim-col.ok{border-color:var(--green)}
+.lim-col .k{font-family:var(--mono);font-size:19px;letter-spacing:.1em;text-transform:uppercase}
+.lim-col ul{margin:0;padding-left:26px;display:flex;flex-direction:column;gap:12px;font-size:25px;line-height:1.4;color:var(--muted)}
+.lim{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+
+/* ---------- tres piezas / reglas ---------- */
+.tools3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.tool{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:34px 30px;display:flex;flex-direction:column;gap:12px}
+.tool .k{font-family:var(--mono);font-size:18px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em}
+.tool .h-m{font-size:34px} .tool .h-m small{font-size:20px;color:var(--orange);font-weight:500;margin-left:8px}
+.tool p{font-size:24px;line-height:1.45;color:var(--muted)}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:34px;flex:1}
+.rule{border:2px dashed var(--c);border-radius:20px;padding:40px 44px;display:flex;flex-direction:column;gap:18px;background:var(--ink-2)}
+.rule .n{font-family:var(--display);font-weight:900;font-size:110px;line-height:.9;color:var(--c)}
+.rule h3{font-family:var(--display);font-weight:750;font-size:46px;line-height:1.1}
+.rule p{font-size:26px;line-height:1.5;color:var(--muted)} .rule p b{color:var(--paper)}
+.bad{font-size:28px;display:flex;gap:16px;align-items:center;border:1px dashed var(--alert);border-radius:12px;padding:20px 28px;align-self:flex-start}
+
+/* ---------- instalación ---------- */
+.case{display:grid;grid-template-columns:1fr 1fr;gap:40px;flex:1;min-height:0}
+.pane{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pane .k{font-family:var(--mono);font-size:19px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:22px}
+.steps[start="5"]{counter-reset:s 4}
+.steps li{counter-increment:s;display:grid;grid-template-columns:56px 1fr;column-gap:20px;row-gap:6px}
+.steps li::before{content:counter(s);grid-row:span 3;width:52px;height:52px;border-radius:50%;border:3px solid var(--orange);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:24px;color:var(--orange)}
+.steps b{font-family:var(--display);font-size:30px;font-weight:700}
+.steps span{font-size:22px;color:var(--muted)} .steps span.mono{color:var(--orange);font-size:21px}
+
+/* ---------- prompt ---------- */
+.anat{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.an{border-left:5px solid var(--c);background:var(--ink-2);border-radius:0 14px 14px 0;padding:22px 26px;display:flex;flex-direction:column;gap:10px}
+.an .k{font-family:var(--mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.an p{font-size:24px;line-height:1.4}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.mode{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:28px 30px;display:flex;flex-direction:column;gap:12px}
+.mode h3{font-family:var(--display);font-weight:700;font-size:34px}
+.mode p{font-size:23px;line-height:1.45;color:var(--muted)}
+.mode.off{opacity:.55;border-style:dashed;border-color:var(--alert)}
+kbd{align-self:flex-start;font-family:var(--mono);font-size:20px;padding:6px 12px;border:1px solid var(--line);border-bottom-width:3px;border-radius:8px;color:var(--orange)}
+.editor{background:#070c16;border:1px solid var(--line);border-radius:14px;padding:22px 26px;font-family:var(--mono);font-size:24px;line-height:1.8}
+.editor .ln{display:flex;gap:22px;white-space:pre}
+.editor .ln i{font-style:normal;color:var(--dim);width:24px;text-align:right}
+.editor .c{color:var(--dim)} .editor .kw{color:var(--blue)}
+.editor .ghost{color:var(--dim);opacity:0} .editor .ghost .kw{color:var(--dim)}
+.active .editor .ghost{animation:ghost 4s ease 1.6s infinite}
+@keyframes ghost{0%,8%{opacity:0}15%,85%{opacity:.75}100%{opacity:0}}
+
+/* ---------- ciclo y reto ---------- */
+.cycle{display:grid;grid-template-columns:1fr 760px;gap:60px;align-items:start}
+.loop{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:24px;color:var(--muted)}
+.loop span{background:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:10px 20px}
+.loop b{color:var(--paper);font-weight:600} .loop i{font-style:normal;color:var(--orange)}
+.reto{background:#f3f5f9;color:#1b2333;border-radius:16px;overflow:hidden;font-family:var(--body)}
+.reto .rh{background:#4f46e5;color:#fff;font-weight:700;font-size:22px;padding:14px 20px;display:flex;justify-content:space-between}
+.reto .rh span{font-size:15px;font-weight:600;background:#fff;color:#4f46e5;border-radius:999px;padding:2px 10px}
+.reto .code{background:#0f172a;color:#e2e8f0;font-family:var(--mono);font-size:17px;line-height:1.5;padding:16px 20px;white-space:pre}
+.reto .code .kw{color:#7dd3fc}
+.reto ul{margin:0;padding:14px 16px;list-style:none;display:flex;flex-direction:column;gap:8px}
+.reto li{border-radius:10px;padding:10px 14px;font-size:18px;display:grid;grid-template-columns:28px 1fr;gap:8px;opacity:0;transform:translateX(-10px)}
+.active .reto li{animation:rise .5s ease forwards;animation-delay:calc(1.6s + var(--i) * .35s)}
+.reto li.ok{background:#e2f5e9;color:#14532d} .reto li.ko{background:#fde8e6;color:#7f1d1d}
+.reto li b{font-weight:800}
+.reto li small{display:block;font-family:var(--mono);font-size:14px;opacity:.8}
+.reto .fin{margin:0 16px 16px;border-radius:10px;padding:12px 16px;font-size:18px;font-weight:600;background:#fde8e6;color:#7f1d1d;opacity:0}
+.active .reto .fin{animation:rise .5s ease forwards;animation-delay:3.4s}
+
+/* ---------- día 2 y día 3 ---------- */
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.f{background:var(--ink-2);border:1px solid var(--line);border-top:5px solid var(--c);border-radius:16px;padding:28px 28px;display:flex;flex-direction:column;gap:12px}
+.f .k{font-family:var(--mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.f h3{font-family:var(--display);font-weight:700;font-size:32px;line-height:1.1}
+.f p{font-size:22px;line-height:1.45;color:var(--muted)} .f p b{color:var(--paper)}
+.path{display:grid;grid-template-columns:repeat(5,1fr);gap:24px;position:relative}
+.path::before{content:"";position:absolute;left:0;right:0;top:30px;height:2px;background:var(--line)}
+.leg{position:relative;display:flex;flex-direction:column;gap:12px}
+.leg .dot{width:62px;height:62px;border-radius:50%;background:var(--ink);border:3px solid var(--c);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:28px;color:var(--c)}
+.leg h3{font-family:var(--display);font-weight:700;font-size:32px}
+.leg p{font-size:22px;line-height:1.45;color:var(--muted)}
+.path .wire{position:absolute;left:0;right:0;top:30px;height:2px;overflow:hidden}
+.path .wire::after{content:"";position:absolute;top:0;left:-200px;width:200px;height:2px;background:linear-gradient(90deg,transparent,var(--orange))}
+.active .path .wire::after{animation:pulse 3s linear infinite 1s}
+@keyframes pulse{to{left:100%}}
+
+/* ---------- cierre ---------- */
+.close{justify-content:center}
+.close .h-xl{font-size:140px}
+.contact{display:flex;gap:56px;border-top:1px solid var(--line);padding-top:30px}
+.contact div{display:flex;flex-direction:column;gap:6px}
+.contact .k{font-family:var(--mono);font-size:19px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.contact .v{font-size:30px;font-weight:500;user-select:all;color:var(--paper)}
+
+/* ---------- reloj ---------- */
+.warm{display:grid;grid-template-columns:1fr 420px;gap:60px;align-items:center}
+.tasks{margin:0;padding-left:34px;display:flex;flex-direction:column;gap:26px;font-size:28px;line-height:1.45;color:var(--muted)}
+.tasks b{color:var(--paper);font-weight:500}
+.timer{all:unset;cursor:pointer;width:380px;height:380px;border-radius:50%;border:6px solid var(--orange);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;justify-self:center}
+.timer:focus-visible{outline:3px solid var(--paper);outline-offset:6px}
+.timer .t-num{font-family:var(--display);font-weight:800;font-size:110px;font-variant-numeric:tabular-nums;line-height:1}
+.timer .t-lbl{font-family:var(--mono);font-size:19px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.timer.run{border-color:var(--green)} .timer.done{border-color:var(--alert)}
+
+/* ---------- controles ---------- */
+.progress{position:fixed;left:0;right:0;top:0;height:4px;z-index:5}
+.progress i{display:block;height:100%;background:var(--orange);width:0;transition:width .5s ease}
+.hud{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(18,28,49,.92);border:1px solid var(--line);border-radius:999px;padding:6px;z-index:6;transition:opacity .4s;font-family:var(--mono);font-size:13px;max-width:calc(100vw - 32px)}
+.hud.idle{opacity:0}
+.hud button,.hud a{all:unset;cursor:pointer;color:var(--paper);padding:8px 14px;border-radius:999px;white-space:nowrap}
+.hud button:hover,.hud a:hover{background:var(--ink-3)}
+.hud button:focus-visible{outline:2px solid var(--orange);outline-offset:1px}
+.hud .count{color:var(--muted);padding:0 10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.notes-panel{position:fixed;left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));max-width:900px;margin:0 auto;background:rgba(7,12,22,.96);border:1px solid var(--line);border-radius:14px;padding:18px 22px;font-size:16px;line-height:1.55;color:var(--paper);z-index:6;max-height:40vh;overflow:auto}
+.notes-panel b{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:6px}
+@media (max-width:640px){.hud .hide-sm{display:none}}
+@media (prefers-reduced-motion: reduce){
+  .r,.toks span,.reto li,.reto .fin,.stamp{opacity:1!important;transform:none!important;animation:none!important}
+  .slide{transition:none}
+  .win-frame,.train .w,.train .gear,.editor .ghost,.ai .cur,.path .wire::after,.tok-cur{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="progress"><i id="bar"></i></div>
+<div class="viewport" id="vp">
+<div class="stage" id="stage">
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <canvas id="fiber" width="1920" height="1080" aria-hidden="true"></canvas>
+  <p class="eyebrow r" style="--d:.3s">Jornada Académica ISC'2026 · ITSVA · Taller de 3 días</p>
+  <h1 class="h-xl r" style="--d:.45s">Programación asistida por <span class="o">Inteligencia Artificial</span></h1>
+  <p class="lead r" style="--d:.65s">Un asistente de código corriendo en tu laptop: sin cuenta, sin costo y sin mandar tu código a nadie. Tú diriges, tú revisas y tú respondes por lo que entregas.</p>
+  <div class="cover-meta r" style="--d:.85s">
+    <div><span class="k">Instructor</span><span class="v">Ing. Leonardo Maldonado</span></div>
+    <div><span class="k">Fechas</span><span class="v">17, 18 y 19 de noviembre · 7:00 a 14:00</span></div>
+    <div><span class="k">Sede</span><span class="v">CC 3 · 5.º y 7.º semestre de ISC</span></div>
+  </div>
+  <aside class="notes">Bienvenida. Pide que conecten la laptop al cargador. A mano alzada: ¿quién ya tiene Ollama o VS Code instalado? Eso define cuánto tiempo darle al bloque de instalación. Recuerda el sitio del taller: todo lo que se ve aquí está ahí, con los ejercicios.</aside>
+</section>
+
+<!-- 2 · QUIÉN SOY -->
+<section class="slide">
+  <p class="eyebrow r">Quién soy</p>
+  <div class="me">
+    <div class="me-id">
+      <h2 class="h-l r" style="--d:.1s">Leonardo Rodrigo<br>Maldonado López</h2>
+      <p class="lead r" style="--d:.25s">De <span class="o">Valladolid, Yucatán</span>. Administrador de sistemas y desarrollador full-stack freelance.</p>
+      <p class="body r" style="--d:.4s">Uso IA para programar todos los días, en la nube y en local. También la he visto fallar con total seguridad. De eso trata este taller: sacarle provecho sin dejar de pensar.</p>
+    </div>
+    <div class="skills">
+      <div class="skill r" style="--d:.35s;--c:var(--blue)"><h3>Desarrollo</h3><div class="chips"><span>PHP · Laravel</span><span>JavaScript</span><span>React Native</span><span>Python</span><span>MongoDB</span><span>Linux</span></div></div>
+      <div class="skill r" style="--d:.5s;--c:var(--orange)"><h3>Redes y telecom</h3><div class="chips"><span>OLT GPON</span><span>MikroTik</span><span>Fibra óptica</span></div></div>
+      <div class="skill r" style="--d:.65s;--c:var(--green)"><h3>Docencia</h3><p>Talleres en el Tecnológico de Valladolid y en la Universidad de Oriente: desarrollo web con IA, Python, MongoDB y Laravel.</p></div>
+    </div>
+  </div>
+  <aside class="notes">Un minuto. Lo importante: no vienen a ver teoría. En tres días salen con un asistente funcionando, 13 ejercicios resueltos y una app hecha por ellos con la IA.</aside>
+</section>
+
+<!-- 3 · AGENDA -->
+<section class="slide">
+  <p class="eyebrow r">Agenda · 3 días · 7:00 a 14:00</p>
+  <h2 class="h-l r" style="--d:.1s">De aprender a pedir, a construir una app completa</h2>
+  <div class="ag-bar r" style="--d:.2s">
+    <span style="--w:1;--c:var(--blue);--d:.4s"></span>
+    <span style="--w:1;--c:var(--orange);--d:.55s"></span>
+    <span style="--w:1;--c:var(--green);--d:.7s"></span>
+  </div>
+  <div class="days">
+    <div class="day r" style="--d:.35s;--c:var(--blue)">
+      <span class="k">Martes 17 · Día 1</span><h3>Fundamentos y buen prompting</h3>
+      <ul>
+        <li><b>7:00</b>Cómo funciona un LLM. Tokens, contexto, alucinaciones</li>
+        <li><b>7:30</b>Instalar Ollama + Continue, sin cuentas</li>
+        <li class="hot"><b>8:15</b>Anatomía de un prompt · Ejercicios 1 y 2</li>
+        <li class="hot"><b>9:45</b>Función a partir de requisitos · Ejercicio 3</li>
+        <li class="hot"><b>12:00</b>IA dentro del editor y el peso del contexto · 4 y 5</li>
+        <li><b>13:15</b>Cierre y bitácora de prompts</li>
+      </ul>
+    </div>
+    <div class="day r" style="--d:.5s;--c:var(--orange)">
+      <span class="k">Miércoles 18 · Día 2</span><h3>Depurar, refactorizar, probar y asegurar</h3>
+      <ul>
+        <li class="hot"><b>7:20</b>Depuración guiada · Ejercicio 6</li>
+        <li class="hot"><b>8:30</b>Refactorizar sin romper nada · 7</li>
+        <li class="hot"><b>9:45</b>¿Falla el código o la prueba? · 8</li>
+        <li class="hot"><b>12:00</b>Documentar sin inventar · 9</li>
+        <li class="hot"><b>13:00</b>Seguridad en el navegador · 10</li>
+      </ul>
+    </div>
+    <div class="day r" style="--d:.65s;--c:var(--green)">
+      <span class="k">Jueves 19 · Día 3</span><h3>Proyecto integrador, límites y ética</h3>
+      <ul>
+        <li><b>7:00</b>Flujo de trabajo: planear → por partes → probar</li>
+        <li class="hot"><b>7:30</b>Gestor de tareas v1 · Ejercicio 11</li>
+        <li class="hot"><b>9:45</b>v2: pruebas primero · 12</li>
+        <li class="hot"><b>12:00</b>Alucinaciones, privacidad y ética · 13</li>
+        <li><b>12:45</b>Demos de 3 minutos por equipo</li>
+        <li><b>13:30</b>Cierre y siguientes pasos</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">Descanso a las 9:30 y comida de 11:00 a 12:00 los tres días. Los números son los ejercicios del sitio; cada día cierran con bitácora: 3 prompts que funcionaron y 1 que falló, con la razón.</aside>
+</section>
+
+<!-- 4 · DIVISOR 01 -->
+<section class="slide divider">
+  <div class="strand"></div>
+  <span class="num r">01</span>
+  <h2 class="h-xl r" style="--d:.15s">¿Qué es una IA local?</h2>
+  <p class="lead r" style="--d:.3s">La misma idea que ChatGPT, pero el modelo vive en tu computadora.</p>
+  <aside class="notes">Transición corta.</aside>
+</section>
+
+<!-- 5 · NUBE VS LOCAL -->
+<section class="slide">
+  <p class="eyebrow r">Nube contra local</p>
+  <h2 class="h-l r" style="--d:.1s">Tu código no tiene que salir de tu laptop</h2>
+  <div class="vs">
+    <div class="vs-col r" style="--d:.25s">
+      <svg class="vs-svg" viewBox="0 0 760 300" role="img" aria-label="Tu laptop envía el código a un servidor en la nube y recibe la respuesta">
+        <rect x="20" y="110" width="200" height="130" rx="12" fill="#121c31" stroke="#26365a" stroke-width="2"/>
+        <text x="120" y="170" text-anchor="middle" class="vt">Tu laptop</text>
+        <text x="120" y="200" text-anchor="middle" class="vs-sub">VS Code</text>
+        <path id="up" d="M230 150 C 360 60, 420 60, 540 110" fill="none" stroke="#26365a" stroke-width="3" stroke-dasharray="6 8"/>
+        <path id="down" d="M540 200 C 420 260, 360 260, 230 210" fill="none" stroke="#26365a" stroke-width="3" stroke-dasharray="6 8"/>
+        <circle r="8" fill="#ff6b5e"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#up"/></animateMotion></circle>
+        <circle r="8" fill="#4a94ff"><animateMotion dur="1.8s" begin=".9s" repeatCount="indefinite"><mpath href="#down"/></animateMotion></circle>
+        <path d="M560 160 a50 50 0 0 1 90 -30 a45 45 0 0 1 80 35 a38 38 0 0 1 -10 75 h-150 a40 40 0 0 1 -10 -80z" fill="#121c31" stroke="#4a94ff" stroke-width="2"/>
+        <text x="645" y="200" text-anchor="middle" class="vt">Servidor</text>
+        <text x="385" y="50" text-anchor="middle" class="vs-sub" style="fill:#ff6b5e">tu código viaja</text>
+      </svg>
+      <h3>IA en la nube</h3>
+      <ul class="vs-list"><li>Necesita internet y una cuenta</li><li>Gratis con límites, o de pago</li><li>Modelos enormes: respuestas mejores</li></ul>
+    </div>
+    <div class="vs-col local r" style="--d:.45s">
+      <svg class="vs-svg" viewBox="0 0 760 300" role="img" aria-label="El modelo corre dentro de tu laptop junto a VS Code">
+        <rect x="160" y="40" width="440" height="230" rx="16" fill="#121c31" stroke="#3fbf6a" stroke-width="2"/>
+        <text x="380" y="80" text-anchor="middle" class="vt">Tu laptop</text>
+        <rect x="200" y="110" width="160" height="120" rx="10" fill="#18243d" stroke="#26365a" stroke-width="2"/>
+        <text x="280" y="176" text-anchor="middle" class="vs-sub">VS Code + Continue</text>
+        <rect x="400" y="110" width="160" height="120" rx="10" fill="#18243d" stroke="#f28c28" stroke-width="2"/>
+        <text x="480" y="168" text-anchor="middle" class="vt" style="fill:#f28c28">Ollama</text>
+        <text x="480" y="196" text-anchor="middle" class="vs-sub">qwen2.5-coder</text>
+        <path id="loc" d="M362 170 H398" stroke="#26365a" stroke-width="3"/>
+        <circle r="7" fill="#3fbf6a"><animateMotion dur="1s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear"><mpath href="#loc"/></animateMotion></circle>
+        <text x="380" y="295" text-anchor="middle" class="vs-sub" style="fill:#3fbf6a">localhost:11434 · sin internet · sin cuenta</text>
+      </svg>
+      <h3 class="g">IA local con Ollama</h3>
+      <ul class="vs-list"><li>Funciona sin internet y sin cuenta</li><li>Gratis, sin límites de uso</li><li>Modelos pequeños: suficientes para aprender</li></ul>
+    </div>
+  </div>
+  <aside class="notes">Ninguna es mejor en todo. En el trabajo uso las dos: la nube para tareas grandes, la local cuando hay datos de clientes o no hay internet. En el taller usamos la local porque nadie se queda sin cuenta y las laptops del CC 3 son limitadas. Plan B si una laptop no puede: mi equipo sirve el modelo en la red del salón.</aside>
+</section>
+
+<!-- 6 · DIVISOR LLM -->
+<section class="slide divider">
+  <div class="strand"></div>
+  <span class="num r">LLM</span>
+  <h2 class="h-xl r" style="--d:.15s">Cómo funciona la IA por dentro</h2>
+  <p class="lead r" style="--d:.3s">Qué es un modelo de lenguaje, qué ve, qué no sabe y qué hace Ollama con él.</p>
+  <aside class="notes">Veinte minutos de teoría antes de instalar. Si entienden estas cinco diapositivas, entienden por qué trabajamos con funciones pequeñas, un chat nuevo por ejercicio y siempre verificando.</aside>
+</section>
+
+<!-- 7 · SIGUIENTE TOKEN -->
+<section class="slide">
+  <p class="eyebrow r">Un LLM por dentro · 1 de 4</p>
+  <h2 class="h-l r" style="--d:.1s">Un modelo de lenguaje predice la siguiente palabra</h2>
+  <div class="tok">
+    <div class="tok-left">
+      <div class="tok-prompt r" style="--d:.25s"><span class="kw">function</span> sumar(a, b) { <span class="kw">return</span> a<span class="tok-cur">▍</span></div>
+      <div class="tok-bars r" style="--d:.4s">
+        <div class="tb top" style="--p:81;--d:.6s"><span>+ b;</span><i></i><b>81%</b></div>
+        <div class="tb" style="--p:9;--d:.75s"><span>* b;</span><i></i><b>9%</b></div>
+        <div class="tb" style="--p:5;--d:.9s"><span>- b;</span><i></i><b>5%</b></div>
+        <div class="tb" style="--p:2;--d:1.05s"><span>;</span><i></i><b>2%</b></div>
+      </div>
+      <p class="tok-note r" style="--d:1.2s">Probabilidades de ejemplo, para ilustrar. “sumar” hace que “+ b” sea lo más probable… no lo más correcto.</p>
+    </div>
+    <div class="tok-right">
+      <div class="tk r" style="--d:.5s"><span class="k">1 · Entrenamiento</span><p>Leyó una cantidad enorme de texto y código, y aprendió qué pedazo suele seguir a cuál.</p></div>
+      <div class="tk r" style="--d:.65s"><span class="k">2 · Predicción</span><p>Al escribirle, calcula el pedazo más probable, lo agrega al final y repite. Una pieza a la vez.</p></div>
+      <div class="tk r" style="--d:.8s"><span class="k">3 · Consecuencia</span><p>No “sabe” ni ejecuta nada: produce lo que <b>suena</b> correcto. Por eso a veces se equivoca con total seguridad.</p></div>
+    </div>
+  </div>
+  <aside class="notes">La idea más importante del taller: el modelo no razona como una persona ni corre el código. Predice texto. Si el patrón más común en lo que leyó es dividir entre length, dividirá entre length aunque tú necesites otra cosa. Si nunca vio tu archivo, inventará nombres de variables.</aside>
+</section>
+
+<!-- 8 · TOKENS Y CONTEXTO -->
+<section class="slide">
+  <p class="eyebrow r">Un LLM por dentro · 2 de 4</p>
+  <h2 class="h-l r" style="--d:.1s">Lee en tokens y solo recuerda una ventana</h2>
+  <div class="ctx">
+    <div class="toks r" style="--d:.2s" aria-label="La frase partida en tokens">
+      <span style="--i:0">const</span><span style="--i:1"> total</span><span style="--i:2"> =</span><span style="--i:3"> ventas</span><span style="--i:4">.</span><span style="--i:5">reduce</span><span style="--i:6">((</span><span style="--i:7">a</span><span style="--i:8">,</span><span style="--i:9"> v</span><span style="--i:10">)</span><span style="--i:11"> =&gt;</span><span style="--i:12"> a</span><span style="--i:13"> +</span><span style="--i:14"> v</span><span style="--i:15">,</span><span style="--i:16"> 0</span><span style="--i:17">);</span><span style="--i:18"> //</span><span style="--i:19"> suma</span><span style="--i:20"> todas</span><span style="--i:21"> las</span><span style="--i:22"> ventas</span>
+    </div>
+    <p class="toks-note r" style="--d:2.4s"><span class="mono o">23 tokens</span> · un token es un pedazo de palabra o símbolo. “ventas” es uno; “=&gt;” es otro. El modelo nunca ve letras ni líneas: ve estas fichas.</p>
+    <div class="window r" style="--d:1.2s">
+      <div class="win-frame"></div>
+      <div class="win-track" id="winTrack">
+        <span class="old">tu</span><span class="old">pregunta</span><span class="old">1</span><span class="old">su</span><span class="old">respuesta</span><span class="old">1</span><span>pregunta</span><span>2</span><span>respuesta</span><span>2</span><span>archivo</span><span>adjunto</span><span>pregunta</span><span>3</span>
+      </div>
+    </div>
+    <div class="win-cap">
+      <div class="r" style="--d:1.6s"><b>Ventana de contexto:</b> el máximo de tokens que puede tener en cuenta a la vez. Lo que queda fuera, para el modelo <b>no existe</b>.</div>
+      <div class="r" style="--d:1.9s"><b>En este taller:</b> los modelos chicos tienen ventanas cortas. Por eso: <b>un chat nuevo por ejercicio</b> y adjuntar el archivo con <span class="mono o">@</span> en vez de confiar en que “se acuerda”.</div>
+    </div>
+  </div>
+  <aside class="notes">Deja que los tokens aparezcan solos. Luego señala el marco naranja: conforme la conversación crece, lo de atrás sale de la ventana. Eso explica el ejercicio 5 (con contexto y sin contexto) y por qué un chat largo "se pierde". Más contexto también cuesta más memoria y tiempo: en laptops limitadas, chats cortos.</aside>
+</section>
+
+<!-- 9 · ENTRENAMIENTO → PESOS -->
+<section class="slide">
+  <p class="eyebrow r">Un LLM por dentro · 3 de 4</p>
+  <h2 class="h-l r" style="--d:.1s">Un modelo es un archivo de números llamados pesos</h2>
+  <svg class="train r" style="--d:.25s" viewBox="0 0 1664 470" role="img" aria-label="Texto y código de internet entran a un proceso de entrenamiento que ajusta miles de millones de números; el resultado es el archivo del modelo, que luego solo predice">
+    <text x="190" y="30" text-anchor="middle" class="k">LO QUE LEYÓ</text>
+    <rect class="box" x="40" y="55" width="300" height="56" rx="10"/><text x="190" y="90" text-anchor="middle" class="t">Documentación y libros</text>
+    <rect class="box" x="40" y="125" width="300" height="56" rx="10"/><text x="190" y="160" text-anchor="middle" class="t">Repositorios de código</text>
+    <rect class="box" x="40" y="195" width="300" height="56" rx="10"/><text x="190" y="230" text-anchor="middle" class="t">Foros y preguntas</text>
+    <rect class="box" x="40" y="265" width="300" height="56" rx="10"/><text x="190" y="300" text-anchor="middle" class="t">Páginas web</text>
+    <text x="190" y="370" text-anchor="middle" class="s">billones de tokens,</text>
+    <text x="190" y="396" text-anchor="middle" class="s">con sus aciertos y sus errores</text>
+
+    <path id="tr1" class="l" d="M350 188 H600"/>
+    <text x="475" y="170" text-anchor="middle" class="s" style="fill:#f28c28">meses de cómputo</text>
+
+    <rect class="main" x="610" y="60" width="420" height="330" rx="18"/>
+    <text x="820" y="110" text-anchor="middle" class="big">Entrenamiento</text>
+    <text x="820" y="140" text-anchor="middle" class="s">tapa una palabra, adivina, corrige</text>
+    <g class="gear" transform="translate(820,250)">
+      <circle r="62" fill="none" stroke="#26365a" stroke-width="18" stroke-dasharray="20 14"/>
+      <circle r="40" fill="#121c31" stroke="#f28c28" stroke-width="3"/>
+      <text y="9" text-anchor="middle" class="s" style="fill:#f28c28;font-size:22px">×10⁹</text>
+    </g>
+    <text x="820" y="365" text-anchor="middle" class="s">ajusta cada número un poquito, millones de veces</text>
+
+    <path id="tr2" class="l" d="M1040 225 H1290"/>
+    <text x="1165" y="207" text-anchor="middle" class="s" style="fill:#f28c28">el resultado</text>
+
+    <text x="1470" y="30" text-anchor="middle" class="k">EL MODELO</text>
+    <rect class="box" x="1300" y="55" width="340" height="340" rx="18" style="stroke:#3fbf6a"/>
+    <text x="1470" y="95" text-anchor="middle" class="t">qwen2.5-coder:1.5b</text>
+    <text x="1470" y="122" text-anchor="middle" class="s">1 500 000 000 pesos · 986 MB</text>
+    <g id="pesos" transform="translate(1322,140)"></g>
+    <text x="1470" y="378" text-anchor="middle" class="s">un archivo. No busca en internet.</text>
+
+    <g fill="#4a94ff">
+      <circle r="7"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#tr1"/></animateMotion></circle>
+      <circle r="7"><animateMotion dur="2.2s" begin=".7s" repeatCount="indefinite"><mpath href="#tr1"/></animateMotion></circle>
+      <circle r="7"><animateMotion dur="2.2s" begin="1.4s" repeatCount="indefinite"><mpath href="#tr1"/></animateMotion></circle>
+    </g>
+    <circle r="8" fill="#3fbf6a"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#tr2"/></animateMotion></circle>
+  </svg>
+  <div class="win-cap">
+    <div class="r" style="--d:.5s"><b>Parámetro = peso</b> = uno de esos números. “1.5b” son mil quinientos millones. Más parámetros: más conocimiento, mejores respuestas, más memoria y más lento.</div>
+    <div class="r" style="--d:.65s"><b>Lo que no está en los pesos, no lo sabe:</b> ni tu archivo, ni lo que pasó después de su entrenamiento, ni si una librería existe. Por eso verificamos en MDN.</div>
+  </div>
+  <aside class="notes">Entrenar es un juego de adivinar la palabra tapada, miles de millones de veces, moviendo los números un poquito cada vez que se equivoca. Al final queda un archivo. Ese archivo no cambia cuando le hablas: no aprende de ti, no recuerda la clase pasada, no se conecta a internet. Los cuadritos que se encienden son una metáfora de los pesos activándose al predecir.</aside>
+</section>
+
+<!-- 10 · OLLAMA -->
+<section class="slide">
+  <p class="eyebrow r">Un LLM por dentro · 4 de 4</p>
+  <h2 class="h-l r" style="--d:.1s">Ollama descarga, carga y sirve modelos abiertos</h2>
+  <svg class="olla r" style="--d:.25s" viewBox="0 0 1664 440" role="img" aria-label="Empresas publican modelos de pesos abiertos; Ollama los descarga, los carga en memoria y los sirve en localhost:11434 a la terminal, a Continue y a tu propia aplicación">
+    <text x="140" y="30" text-anchor="middle" class="ol-k">QUIÉN LOS PUBLICA</text>
+    <rect x="20" y="55" width="240" height="56" rx="10"/><text x="140" y="90" text-anchor="middle" class="ol-t">Qwen · Alibaba</text>
+    <rect x="20" y="125" width="240" height="56" rx="10"/><text x="140" y="160" text-anchor="middle" class="ol-t">Llama · Meta</text>
+    <rect x="20" y="195" width="240" height="56" rx="10"/><text x="140" y="230" text-anchor="middle" class="ol-t">Gemma · Google</text>
+    <rect x="20" y="265" width="240" height="56" rx="10"/><text x="140" y="300" text-anchor="middle" class="ol-t">Mistral · DeepSeek</text>
+    <text x="140" y="360" text-anchor="middle" class="ol-s">pesos abiertos:</text>
+    <text x="140" y="386" text-anchor="middle" class="ol-s">cualquiera los descarga</text>
+    <path id="olp1" class="ol-l" d="M270 188 H560"/>
+    <text x="415" y="170" text-anchor="middle" class="ol-c">ollama pull</text>
+    <rect x="570" y="70" width="520" height="300" rx="18" class="ol-main"/>
+    <text x="830" y="120" text-anchor="middle" class="ol-big">Ollama</text>
+    <text x="830" y="150" text-anchor="middle" class="ol-s">corre en tu laptop (o en la del instructor)</text>
+    <rect x="610" y="180" width="440" height="50" rx="8" class="ol-in"/><text x="830" y="212" text-anchor="middle" class="ol-t">Guarda los modelos descargados</text>
+    <rect x="610" y="240" width="440" height="50" rx="8" class="ol-in"/><text x="830" y="272" text-anchor="middle" class="ol-t">Los carga en RAM (o tarjeta de video)</text>
+    <rect x="610" y="300" width="440" height="50" rx="8" class="ol-in hl"/><text x="830" y="332" text-anchor="middle" class="ol-t">Responde en localhost:11434</text>
+    <path id="olp2" class="ol-l" d="M1100 325 C1200 325 1200 105 1300 105"/>
+    <path id="olp3" class="ol-l" d="M1100 325 C1200 325 1200 215 1300 215"/>
+    <path id="olp4" class="ol-l" d="M1100 325 H1300"/>
+    <text x="1470" y="30" text-anchor="middle" class="ol-k">QUIÉN LE PREGUNTA</text>
+    <rect x="1310" y="75" width="320" height="60" rx="10"/><text x="1470" y="112" text-anchor="middle" class="ol-t">Terminal · ollama run</text>
+    <rect x="1310" y="185" width="320" height="60" rx="10"/><text x="1470" y="222" text-anchor="middle" class="ol-t">VS Code · Continue</text>
+    <rect x="1310" y="295" width="320" height="60" rx="10" class="me"/><text x="1470" y="332" text-anchor="middle" class="ol-t">Tu app · fetch()</text>
+    <g fill="#f28c28">
+      <circle r="8"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#olp1"/></animateMotion></circle>
+      <circle r="7"><animateMotion dur="1.6s" begin=".2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#olp2"/></animateMotion></circle>
+      <circle r="7"><animateMotion dur="1.6s" begin=".7s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#olp3"/></animateMotion></circle>
+      <circle r="7"><animateMotion dur="1.6s" begin="1.2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#olp4"/></animateMotion></circle>
+    </g>
+  </svg>
+  <p class="body r" style="--d:.5s">Ollama <b class="o">no es un modelo</b>: es el motor. Por eso el mismo Ollama sirve para Qwen, Llama o Gemma, y por eso Continue y una app tuya pueden preguntarle a la vez. Si corre en la laptop del instructor, cambia <span class="mono">localhost</span> por su IP.</p>
+  <aside class="notes">Pesos abiertos significa que la empresa publica el archivo para que cualquiera lo descargue; cada modelo tiene su licencia. El puerto 11434 es la clave del plan B: con OLLAMA_HOST=0.0.0.0 en mi equipo, las laptops del salón apuntan a mi IP desde el generador de configuración del sitio.</aside>
+</section>
+
+<!-- 11 · TAMAÑO Y MEMORIA -->
+<section class="slide">
+  <p class="eyebrow r">Tamaño y recursos</p>
+  <h2 class="h-l r" style="--d:.1s">Más parámetros: mejores respuestas, más memoria, más lento</h2>
+  <div class="ram r" style="--d:.25s">
+    <div class="ram-axis"><span style="--x:0">0</span><span style="--x:25">2 GB</span><span style="--x:50">4 GB</span><span style="--x:75">6 GB</span><span style="--x:100;transform:translateX(-100%)">8 GB</span></div>
+    <div class="ram-row ok" style="--w:5;--d:.4s"><span class="ram-n">qwen2.5-coder:0.5b <small>500 millones · nivel Mínimo (4 GB de RAM)</small></span><div class="ram-t"><i></i><b>≈ 400 MB</b></div></div>
+    <div class="ram-row hot" style="--w:12.3;--d:.5s"><span class="ram-n">qwen2.5-coder:1.5b <small>1.5 mil millones · nivel Ligero: empieza aquí</small></span><div class="ram-t"><i></i><b>986 MB</b></div></div>
+    <div class="ram-row ok" style="--w:23.8;--d:.6s"><span class="ram-n">qwen2.5-coder:3b <small>3 mil millones · nivel Medio (8 GB o más)</small></span><div class="ram-t"><i></i><b>1.9 GB</b></div></div>
+    <div class="ram-row" style="--w:58.8;--d:.7s"><span class="ram-n">qwen2.5-coder:7b <small>7 mil millones · no en el laboratorio</small></span><div class="ram-t"><i></i><b>4.7 GB</b></div></div>
+    <div class="ram-row" style="--w:100;--d:.8s"><span class="ram-n">Modelos de la nube <small>cientos de miles de millones</small></span><div class="ram-t"><i style="background:var(--dim)"></i><b>no caben en ninguna laptop →</b></div></div>
+    <div class="ram-line"><span>Laptop de 8 GB: la memoria se comparte con Windows, el navegador y VS Code</span></div>
+  </div>
+  <p class="body r" style="--d:1s">Barras: tamaño de descarga. Al correr ocupa algo más. Con poca memoria el equipo empieza a usar el disco y todo se vuelve lentísimo: <b class="o">si va lento, baja de nivel</b>, no esperes.</p>
+  <aside class="notes">Los tres niveles del generador de configuración del sitio son exactamente estas tres filas. Regla práctica: empiezan en Ligero; si responde rápido pueden subir a Medio; si se arrastra, bajan a Mínimo, que sirve para explicar código y corregir funciones chicas. El autocompletado apagado por omisión: es lo primero que traba una laptop.</aside>
+</section>
+
+<!-- 12 · ALUCINACIONES -->
+<section class="slide">
+  <p class="eyebrow r">La consecuencia</p>
+  <h2 class="h-l r" style="--d:.1s">Suena correcto no es lo mismo que ser correcto</h2>
+  <div class="halu">
+    <div class="chat">
+      <div class="q r" style="--d:.3s">¿Cómo uso el método <span class="mono">Array.prototype.sortBy()</span> de JavaScript?</div>
+      <div class="ai r" style="--d:.6s" data-text="Claro. sortBy() ordena un arreglo de objetos por la propiedad que indiques:
+
+const alumnos = [{ nombre: 'Ana', prom: 91 }, { nombre: 'Luis', prom: 72 }];
+const ordenados = alumnos.sortBy('prom');
+
+También acepta un segundo argumento 'desc' para orden descendente. Está disponible desde ES2019 en todos los navegadores modernos.">
+        <div class="stamp" style="--d:6s">✗ No existe · MDN</div>
+      </div>
+    </div>
+    <div class="halu-right">
+      <div class="lim-col r" style="--d:.8s">
+        <span class="k a">Qué pasó</span>
+        <ul><li>Nunca dijo “no existe”: le seguiste la corriente y te la siguió</li><li>Inventó sintaxis, un argumento y hasta el año del estándar</li><li>Todo con la misma seguridad que una respuesta verdadera</li></ul>
+      </div>
+      <div class="lim-col ok r" style="--d:1s">
+        <span class="k g">Qué haces tú</span>
+        <ul><li>Ejecuta el código antes de confiar</li><li>Verifica en MDN cualquier método o atributo que no conozcas</li><li>Pídele el ejemplo exacto que falló, no “arréglalo”</li></ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Es el ejercicio 13 del día 3 adelantado. Lo real: Array tiene sort() y toSorted(); sortBy no existe. Con un modelo chico esto pasa a cada rato; con uno grande, menos, pero pasa. La regla es la misma: lo que no ejecutaste ni verificaste, no lo entregas.</aside>
+</section>
+
+<!-- 13 · LÍMITES -->
+<section class="slide">
+  <p class="eyebrow r">Lo que aprendimos preparando este taller</p>
+  <h2 class="h-l r" style="--d:.1s">Un modelo pequeño se pierde con tareas grandes</h2>
+  <div class="lim">
+    <div class="lim-col r" style="--d:.25s">
+      <span class="k a">Lo que pasó</span>
+      <ul><li>Volvió a declarar variables que ya existían</li><li>Inventó nombres: <span class="mono">table</span> en vez de <span class="mono">tabla</span></li><li>Cambió “mayor que” por “mayor o igual” y rompió un empate</li><li>En modo Agente se quedó dando vueltas o respondió sin sentido</li></ul>
+    </div>
+    <div class="lim-col r" style="--d:.45s">
+      <span class="k a">Por qué</span>
+      <ul><li>Ventana corta: no recuerda todo tu archivo</li><li>Con instrucciones largas, olvida partes</li><li>Predice lo común, no lo correcto</li><li>No ejecuta ni prueba lo que escribe; no sabe usar herramientas</li></ul>
+    </div>
+    <div class="lim-col ok r" style="--d:.65s">
+      <span class="k g">Cómo lo usamos bien</span>
+      <ul><li>Una función pequeña por prompt, un chat nuevo por ejercicio</li><li>Tarea concreta, restricciones y un ejemplo entrada → salida</li><li>Los retos del sitio te dicen qué caso falló</li><li>Corriges describiendo ese caso, no reescribiendo todo</li></ul>
+    </div>
+  </div>
+  <aside class="notes">Cuéntalo como historia: preparando el taller, pedirle "el gestor de tareas completo" al 1.5b fue un desastre. Por partes, con pruebas, funcionó. Con modelos grandes las tareas pueden crecer, pero la verificación nunca se quita.</aside>
+</section>
+
+<!-- 14 · TRES PIEZAS -->
+<section class="slide">
+  <p class="eyebrow r">Lo que vamos a usar</p>
+  <h2 class="h-l r" style="--d:.1s">Tres piezas que trabajan juntas, sin crear ninguna cuenta</h2>
+  <div class="tools3">
+    <div class="tool r" style="--d:.25s"><span class="k">El motor</span><h3 class="h-m">Ollama</h3><p>Descarga y ejecuta modelos en tu computadora. Escucha en <span class="mono o">localhost:11434</span>. Si tu laptop no puede, apuntas al del instructor.</p></div>
+    <div class="tool r" style="--d:.38s"><span class="k">El modelo</span><h3 class="h-m">qwen2.5-coder <small class="mono">0.5b · 1.5b · 3b</small></h3><p>Entrenado para programar. Tres tamaños según tu equipo; el generador del sitio arma la configuración por ti.</p></div>
+    <div class="tool r" style="--d:.51s"><span class="k">El editor</span><h3 class="h-m">VS Code + Continue</h3><p>Continue pone un chat junto a tu código y edita selecciones. Omite el inicio de sesión: con modelos locales no hace falta.</p></div>
+  </div>
+  <p class="body r" style="--d:.7s">Todo el taller funciona sin internet una vez descargado el modelo. Los ejercicios y sus pruebas corren en tu navegador: nada sale de tu equipo.</p>
+  <aside class="notes">Los modelos generales pequeños escriben mal el código; qwen-coder está entrenado específicamente para programar y por eso rinde bien aun en 1.5b.</aside>
+</section>
+
+<!-- 15 · DOS REGLAS -->
+<section class="slide">
+  <p class="eyebrow r">Dos reglas del taller</p>
+  <h2 class="h-l r" style="--d:.1s">Léelas dos veces. Son las que evitan que la laptop se trabe</h2>
+  <div class="rules">
+    <div class="rule r" style="--d:.3s;--c:var(--alert)">
+      <span class="n">1</span>
+      <h3>Nada de modo Agente</h3>
+      <p>En Continue el selector se queda en <b>Chat</b>. Los modelos de este taller no manejan herramientas: en Agente se quedan “pensando” o truenan. Todo lo que haremos se logra con Chat y con edición en línea (<b>Ctrl+I</b>).</p>
+    </div>
+    <div class="rule r" style="--d:.5s;--c:var(--orange)">
+      <span class="n">2</span>
+      <h3>Modelos chicos a propósito</h3>
+      <p>Empieza en <b>Ligero</b> (1.5b) con el <b>autocompletado apagado</b>. Sube a Medio solo si te responde rápido. Si va lento, <b>baja de nivel</b> en vez de esperar: Mínimo alcanza para explicar y corregir.</p>
+    </div>
+  </div>
+  <aside class="notes">Insiste desde el minuto uno; es lo que más repetirás los tres días. Síntoma de agente encendido: "se queda pensando sin terminar". Síntoma de poca memoria: todo el equipo se arrastra, no solo Continue.</aside>
+</section>
+
+<!-- 16 · INSTALACIÓN 1-4 -->
+<section class="slide">
+  <p class="eyebrow r">Instalación · Paso 1 a 4</p>
+  <h2 class="h-l r" style="--d:.1s">Ollama funcionando en la terminal</h2>
+  <div class="case">
+    <div class="pane r" style="--d:.25s">
+      <ol class="steps">
+        <li><b>Instala Ollama</b><span>ollama.com/download · o del USB del instructor</span></li>
+        <li><b>Comprueba</b><span class="mono">ollama --version</span></li>
+        <li><b>Descarga el modelo de tu nivel</b><span class="mono">ollama pull qwen2.5-coder:1.5b</span><span>el generador del sitio te da el comando exacto</span></li>
+        <li><b>Platica con él</b><span class="mono">ollama run qwen2.5-coder:1.5b</span><span>para salir: <span class="mono">/bye</span></span></li>
+      </ol>
+    </div>
+    <div class="pane r" style="--d:.4s">
+      <span class="k">Así se ve</span>
+      <div class="ai" data-text="$ ollama --version
+ollama version is 0.x.x
+
+$ ollama pull qwen2.5-coder:1.5b
+pulling manifest
+pulling 29d8c98fa6b0... 100% ▕████████████▏ 986 MB
+success
+
+$ ollama run qwen2.5-coder:1.5b
+>>> Escribe una función JavaScript que invierta un texto
+function invertir(texto) {
+  return texto.split('').reverse().join('');
+}"></div>
+    </div>
+  </div>
+  <aside class="notes">Hazlo proyectado al mismo tiempo que ellos. Decenas de laptops bajando 1 GB a la vez saturan la red: ten instalador y modelos en USB o carpeta compartida. Quien ya terminó ayuda al de al lado.</aside>
+</section>
+
+<!-- 17 · CONTINUE -->
+<section class="slide">
+  <p class="eyebrow r">Instalación · Paso 5 a 8</p>
+  <h2 class="h-l r" style="--d:.1s">Conectar VS Code con tu IA</h2>
+  <div class="case">
+    <div class="pane r" style="--d:.25s">
+      <ol class="steps" start="5">
+        <li><b>Instala VS Code</b><span>code.visualstudio.com</span></li>
+        <li><b>Extensiones</b><span>Continue y Live Server (Ctrl+Shift+X). En Continue, <b>omite el inicio de sesión</b>.</span></li>
+        <li><b>Pega la configuración</b><span>Generada en el sitio → <span class="mono">config.yaml</span>. Guarda y recarga: Ctrl+Shift+P → Reload Window.</span></li>
+        <li><b>Prueba el chat</b><span>Modo <b>Chat</b> · Ctrl+L: “Escribe una función que invierta un texto”</span></li>
+      </ol>
+    </div>
+    <div class="pane r" style="--d:.4s">
+      <span class="k">config.yaml · solo chat y edit</span>
+      <div class="ai" data-text="# Taller ISC'2026 — equipos limitados.
+# Sin rol de agente: los modelos pequeños
+# no manejan herramientas.
+name: Taller IA ITSVA
+version: 1.0.0
+schema: v1
+models:
+  - name: Chat y edición (qwen2.5-coder:1.5b)
+    provider: ollama
+    model: qwen2.5-coder:1.5b
+    roles:
+      - chat
+      - edit"></div>
+      <p class="body" style="font-size:21px">Si el modelo corre en la laptop del instructor, el generador agrega <span class="mono o">apiBase: http://IP:11434</span>.</p>
+    </div>
+  </div>
+  <aside class="notes">Errores comunes: no recargar VS Code después de guardar; sangría con tabuladores; nombre del modelo distinto al de "ollama list". "No models configured" casi siempre es sangría.</aside>
+</section>
+
+<!-- 18 · DIVISOR 02 -->
+<section class="slide divider">
+  <div class="strand"></div>
+  <span class="num r">02</span>
+  <h2 class="h-xl r" style="--d:.15s">Cómo pedirle código a la IA</h2>
+  <p class="lead r" style="--d:.3s">Un modelo pequeño responde tan bien como le preguntes.</p>
+  <aside class="notes">Transición.</aside>
+</section>
+
+<!-- 19 · ANATOMÍA -->
+<section class="slide">
+  <p class="eyebrow r">Anatomía de un prompt</p>
+  <h2 class="h-l r" style="--d:.1s">Rol, contexto, tarea, restricciones, formato y ejemplo</h2>
+  <div class="anat">
+    <div class="an r" style="--d:.25s;--c:var(--slate)"><span class="k">Rol</span><p>“Actúa como desarrollador JavaScript senior que enseña a estudiantes.”</p></div>
+    <div class="an r" style="--d:.4s;--c:var(--aqua)"><span class="k">Contexto</span><p>“Página web de un restaurante en México.”</p></div>
+    <div class="an r" style="--d:.55s;--c:var(--blue)"><span class="k">Tarea · una sola</span><p>“Escribe <span class="mono">calcularCuenta(subtotal, propinaPct)</span>: subtotal + 16 % de IVA + propina sobre el subtotal.”</p></div>
+    <div class="an r" style="--d:.7s;--c:var(--orange)"><span class="k">Restricciones</span><p>“JavaScript puro. Si subtotal ≤ 0 o la propina sale de 0–100, lanza un Error.”</p></div>
+    <div class="an r" style="--d:.85s;--c:var(--violet)"><span class="k">Formato</span><p>“Solo la función con JSDoc. Sin explicación.”</p></div>
+    <div class="an r" style="--d:1s;--c:var(--green)"><span class="k">Ejemplo</span><p>“<span class="mono">calcularCuenta(500, 10)</span> devuelve 630 (500 + 80 + 50).”</p></div>
+  </div>
+  <div class="bad r" style="--d:1.25s"><span class="a mono">✗</span><span>“haz una calculadora de propinas”</span><span class="dim-t">→ la IA adivina todo, y adivina mal. Es el ejercicio 2: compara ambas respuestas.</span></div>
+  <aside class="notes">No siempre hacen falta los seis. Lo que casi nunca debe faltar: tarea concreta, restricciones y un ejemplo. Con un modelo pequeño el ejemplo es lo más importante: le dice exactamente qué esperar. Lee el mal ejemplo en voz alta y pregunta qué le falta.</aside>
+</section>
+
+<!-- 20 · MODOS -->
+<section class="slide">
+  <p class="eyebrow r">Continue en VS Code</p>
+  <h2 class="h-l r" style="--d:.1s">Dos formas de trabajar (y una que no usamos)</h2>
+  <div class="modes">
+    <div class="mode r" style="--d:.25s"><kbd>Ctrl + L</kbd><h3>Chat</h3><p>Preguntas y respuestas junto a tu código. Selecciona código antes y lo usa como contexto; escribe <b class="o">@</b> para adjuntar un archivo.</p></div>
+    <div class="mode r" style="--d:.38s"><kbd>Ctrl + I</kbd><h3>Editar en línea</h3><p>Selecciona código, pide un cambio y revisa el diff línea por línea antes de aceptar o rechazar. Es lo que mejor corre en estos equipos.</p></div>
+    <div class="mode off r" style="--d:.51s"><kbd style="color:var(--alert)">✗</kbd><h3>Agente</h3><p>Edita archivos y ejecuta comandos por su cuenta. Necesita modelos grandes que manejen herramientas. <b>No en este taller.</b></p></div>
+  </div>
+  <div class="editor r" style="--d:.7s">
+    <div class="ln"><i>1</i><span class="c">// función que reciba un arreglo de calificaciones y devuelva el promedio con un decimal</span></div>
+    <div class="ln"><i>2</i><span><span class="kw">function</span> promedio(calificaciones) {</span></div>
+    <div class="ln"><i>3</i><span class="ghost">  <span class="kw">const</span> suma = calificaciones.reduce((a, c) => a + c, 0);</span></div>
+    <div class="ln"><i>4</i><span class="ghost">  <span class="kw">return</span> +(suma / calificaciones.length).toFixed(1);</span></div>
+    <div class="ln"><i>5</i><span>}</span></div>
+  </div>
+  <p class="body r" style="--d:.9s;font-size:22px">El autocompletado (sugerencia gris, <span class="mono o">Tab</span>) existe, pero va apagado por omisión: enciéndelo solo si el chat ya te responde rápido.</p>
+  <aside class="notes">En Mac es Cmd. El ejercicio 4 es justamente Ctrl+I sobre tres comentarios. Si alguien tiene equipo sobrado, puede probar el autocompletado; si va lento, lo apaga y sigue con edición en línea.</aside>
+</section>
+
+<!-- 21 · CICLO Y RETO -->
+<section class="slide">
+  <p class="eyebrow r">Cómo trabajamos los tres días</p>
+  <h2 class="h-l r" style="--d:.1s">Pedir, leer, probar y corregir con el caso que falló</h2>
+  <div class="cycle">
+    <div style="display:flex;flex-direction:column;gap:30px">
+      <div class="loop r" style="--d:.25s">
+        <span>Pega el <b>prompt</b> en Chat</span><i>→</i><span><b>Lee</b> la función</span><i>→</i><span>Pégala en el <b>reto</b></span><i>→</i><span><b>Ejecutar pruebas</b></span><i>→</i><span>Describe a la IA <b>el caso en rojo</b></span>
+      </div>
+      <p class="body r" style="--d:.45s">Siete de los trece ejercicios tienen un reto en el sitio: pegas la función, la página la corre contra casos de prueba <b class="o">en tu propio navegador</b> y te dice qué esperaba y qué devolvió. Al pasar todos, el ejercicio se marca como hecho.</p>
+      <p class="body r" style="--d:.6s">Lo que pasó aquí: la IA calculó la propina sobre el total con IVA. No lo corriges tú: le describes el caso exacto y pides el cambio mínimo.</p>
+    </div>
+    <div class="reto r" style="--d:.4s">
+      <div class="rh">Reto · calcularCuenta <span>5 casos</span></div>
+      <div class="code"><span class="kw">function</span> calcularCuenta(subtotal, propinaPct) {
+  <span class="kw">const</span> conIva = subtotal * 1.16;
+  <span class="kw">return</span> conIva + conIva * propinaPct / 100;
+}</div>
+      <ul>
+        <li class="ko" style="--i:0"><b>✗</b><div>500 con 10 % de propina<small>Esperado: 630 · Devuelto: 638</small></div></li>
+        <li class="ok" style="--i:1"><b>✓</b><div>100 sin propina (solo IVA)<small>Esperado: 116 · Devuelto: 116</small></div></li>
+        <li class="ko" style="--i:2"><b>✗</b><div>200 con 15 % de propina<small>Esperado: 262 · Devuelto: 266.8</small></div></li>
+        <li class="ko" style="--i:3"><b>✗</b><div>Subtotal negativo debe lanzar Error<small>Esperado: que lance un Error · Devuelto: -6.38</small></div></li>
+        <li class="ko" style="--i:4"><b>✗</b><div>Propina de 150 % debe lanzar Error<small>Esperado: que lance un Error · Devuelto: 290</small></div></li>
+      </ul>
+      <div class="fin">1 de 5 casos correctos</div>
+    </div>
+  </div>
+  <aside class="notes">Abre el sitio y muestra el reto real del ejercicio 2. Todo corre en el navegador del alumno, en un iframe aislado con límite de 4 segundos por si meten un bucle infinito. El progreso se guarda en su navegador. Lo que quiero que se lleven: el error de la IA se corrige con información, no con fe.</aside>
+</section>
+
+<!-- 22 · CALENTAMIENTO -->
+<section class="slide">
+  <p class="eyebrow r">Calentamiento · Día 1</p>
+  <h2 class="h-l r" style="--d:.1s">Tu primera conversación con la IA</h2>
+  <div class="warm">
+    <ol class="tasks r" style="--d:.25s">
+      <li>En el chat: <b>“Escribe una función JavaScript que invierta un texto”</b>. Pruébala en la consola del navegador (F12).</li>
+      <li>Abre <span class="mono o">e07-refactor.js</span>, selecciona todo, Ctrl+L: <b>“Explícame este código línea por línea”</b>. Compara con lo que muestra la página.</li>
+      <li>Selecciona la función, Ctrl+I: <b>“agrega un comentario JSDoc sin cambiar el comportamiento”</b>. Revisa el diff antes de aceptar.</li>
+    </ol>
+    <button class="timer r" style="--d:.4s" type="button" data-min="10"><span class="t-num">10:00</span><span class="t-lbl">Clic para iniciar</span></button>
+  </div>
+  <aside class="notes">Clic en el reloj para los 10 minutos. Camina por el salón: aquí salen los problemas de instalación que no se vieron antes. Si un equipo va lento con el 1.5b, bájalo al 0.5b sin dudar.</aside>
+</section>
+
+<!-- 23 · DÍA 2 -->
+<section class="slide">
+  <p class="eyebrow r">Día 2 · Código que ya existe</p>
+  <h2 class="h-l r" style="--d:.1s">La IA sobre código ajeno: encontrar, mejorar, probar y asegurar</h2>
+  <div class="four">
+    <div class="f r" style="--d:.25s;--c:var(--alert)"><span class="k">Ejercicio 6 · 70 min</span><h3>Depurar</h3><p><span class="mono">e06-debug.js</span> trae <b>cuatro errores</b> sembrados. Un arreglo a la vez, recargando después de cada cambio. Nunca “arréglalo todo”.</p></div>
+    <div class="f r" style="--d:.4s;--c:var(--blue)"><span class="k">Ejercicio 7 · 60 min</span><h3>Refactorizar</h3><p>Mismo comportamiento, mejor código. El reto compara la salida completa, <b>incluido el empate</b> entre Ana y Marta.</p></div>
+    <div class="f r" style="--d:.55s;--c:var(--orange)"><span class="k">Ejercicio 8 · 75 min</span><h3>Probar</h3><p>La IA escribe las pruebas; tú decides si el error está en el código o en la prueba. <b>Tres bugs reales</b>: no ajustes la prueba para que pase.</p></div>
+    <div class="f r" style="--d:.7s;--c:var(--green)"><span class="k">Ejercicio 10 · 60 min</span><h3>Asegurar</h3><p>XSS por innerHTML, eval, credenciales en el código y permisos en localStorage. Demuestras el ataque en el archivo de práctica y lo corriges.</p></div>
+  </div>
+  <p class="body r" style="--d:.9s">Y en medio, el ejercicio 9: documentar <b class="o">sin inventar</b>. La IA promete “valida la entrada” cuando el código no lo hace; tu trabajo es cazar esa afirmación.</p>
+  <aside class="notes">El momento clave del día es en el ejercicio 8, cuando una prueba falla porque el código está mal y no la prueba. Detente ahí. En el 10, la demo de XSS es solo sobre el archivo de práctica; deja claro que no se prueba en sitios ajenos.</aside>
+</section>
+
+<!-- 24 · DÍA 3 -->
+<section class="slide">
+  <p class="eyebrow r">Día 3 · Proyecto integrador</p>
+  <h2 class="h-l r" style="--d:.1s">Una app completa, pero nunca de un solo jalón</h2>
+  <div class="path">
+    <div class="wire"></div>
+    <div class="leg r" style="--d:.25s;--c:var(--slate)"><span class="dot">1</span><h3>Plan</h3><p>Pide solo el plan: qué hace cada función, qué recibe, qué estructura tiene una tarea. Máximo 20 líneas. Apruébalo tú.</p></div>
+    <div class="leg r" style="--d:.4s;--c:var(--blue)"><span class="dot">2</span><h3>Almacenamiento</h3><p><span class="mono">cargarTareas</span> y <span class="mono">guardarTareas</span>. Si el JSON está corrupto, devuelve [] sin tronar. Pruébalo en consola.</p></div>
+    <div class="leg r" style="--d:.55s;--c:var(--orange)"><span class="dot">3</span><h3>Operaciones</h3><p>Agregar, completar, borrar. Una pieza, recarga, verifica.</p></div>
+    <div class="leg r" style="--d:.7s;--c:var(--aqua)"><span class="dot">4</span><h3>Interfaz y eventos</h3><p>Pintar la lista con <span class="mono">textContent</span>, nunca innerHTML con el título. Enlazar el formulario.</p></div>
+    <div class="leg r" style="--d:.85s;--c:var(--green)"><span class="dot">5</span><h3>v2: pruebas primero</h3><p>Prioridades y filtros. Primero las pruebas, luego la implementación mínima. Ojo con <span class="mono">completada: false</span>.</p></div>
+  </div>
+  <p class="body r" style="--d:1.05s">Si la IA te entrega todo el archivo de golpe, la regresas a la pieza que ibas: <b class="o">lo que no puedes verificar, no lo puedes entregar</b>. Cierra con demos de 3 minutos: qué hace, qué le pidió a la IA y qué tuvo que corregir.</p>
+  <aside class="notes">El esqueleto está en practicas/proyecto. Revisa en cada equipo que cargarTareas tenga try/catch y que pintarTareas no use innerHTML con texto del usuario: conecta con el ejercicio 10. Prueba rápida: localStorage.setItem('taller-tareas','{roto') y recargar.</aside>
+</section>
+
+<!-- 25 · USO RESPONSABLE -->
+<section class="slide">
+  <p class="eyebrow r">Privacidad y ética</p>
+  <h2 class="h-l r" style="--d:.1s">Eres responsable del código que entregas, lo haya escrito quien sea</h2>
+  <div class="lim">
+    <div class="lim-col r" style="--d:.25s"><span class="k a">Nunca pegues en un chat</span><ul><li>Contraseñas, tokens, llaves de API</li><li>Datos personales de clientes o compañeros</li><li>Código con licencia que no permite compartirlo</li><li>Lo que no pondrías en un foro público</li></ul></div>
+    <div class="lim-col r" style="--d:.45s"><span class="k o">Siempre</span><ul><li>Declara cuándo usaste IA en tareas y proyectos</li><li>Verifica en la documentación oficial antes de confiar en una API</li><li>Pregunta “¿qué hace esta línea?” hasta entenderla</li><li>Con modelos locales, tu código no sale de tu equipo; con la nube, asume que sí</li></ul></div>
+    <div class="lim-col ok r" style="--d:.65s"><span class="k g">Para qué sí sirve</span><ul><li>Aprender más rápido: explicaciones a tu nivel, cuando las necesitas</li><li>El trabajo repetitivo: pruebas, documentación, refactorizaciones</li><li>Una segunda opinión sobre seguridad y casos borde</li><li>Nunca para saltarte el entender lo que entregas</li></ul></div>
+  </div>
+  <aside class="notes">Cierra el día 3 aquí, con el ejercicio 13: tres reglas personales por alumno, compartidas en voz alta. Recuerda la evaluación: retos verdes en el sitio, proyecto funcionando y bitácora de prompts.</aside>
+</section>
+
+<!-- 26 · REGLA DE ORO -->
+<section class="slide close">
+  <p class="eyebrow r">Regla de oro</p>
+  <h2 class="h-xl r" style="--d:.15s">La IA escribe.<br><span class="o">Tú entiendes cada línea.</span></h2>
+  <p class="lead r" style="--d:.35s">Si no entiendes una línea, pregúntale qué hace. Si algo falla, pégale el error completo de la consola (F12) o el caso exacto que quedó en rojo.</p>
+  <aside class="notes">Déjala en pantalla mientras trabajan. Es la idea que más quiero que se lleven.</aside>
+</section>
+
+<!-- 27 · CIERRE -->
+<section class="slide close">
+  <canvas id="fiber2" width="1920" height="1080" aria-hidden="true" style="opacity:.55"></canvas>
+  <p class="eyebrow r">Cierre</p>
+  <h2 class="h-xl r" style="--d:.15s">Ya tienes un asistente.<br><span class="o">Úsalo diario, y revísalo siempre.</span></h2>
+  <p class="lead r" style="--d:.35s">Lleva el gestor de tareas a un proyecto tuyo y agrégale una función nueva cada semana, con su prueba. El sitio con los ejercicios se queda publicado.</p>
+  <div class="contact r" style="--d:.55s">
+    <div><span class="k">Sitio del taller</span><span class="v mono" style="font-size:26px">lrmaldo.github.io/taller-ia-itsva</span></div>
+    <div><span class="k">Instructor</span><span class="v">Ing. Leonardo Maldonado</span></div>
+    <div><span class="k">Correo</span><span class="v">lrmaldo@gmail.com</span></div>
+  </div>
+  <aside class="notes">Pide que muestren a su compañero lo que construyeron. Agradece al ITSVA y a la coordinación de la Jornada ISC'2026.</aside>
+</section>
+
+</div>
+</div>
+
+<div class="notes-panel" id="notes" hidden><b>Notas del ponente</b><span id="notesText"></span></div>
+<nav class="hud" id="hud" aria-label="Navegación">
+  <button id="prev" aria-label="Anterior">←</button>
+  <span class="count" id="count">1 / 27</span>
+  <button id="next" aria-label="Siguiente">→</button>
+  <button id="nbtn" class="hide-sm">Notas (N)</button>
+  <button id="fbtn" class="hide-sm">Pantalla completa (F)</button>
+  <a href="index.html" class="hide-sm">Sitio del taller ↗</a>
+</nav>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const slides = [...document.querySelectorAll('.slide')];
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  const notes = document.getElementById('notes');
+  const notesText = document.getElementById('notesText');
+  const hud = document.getElementById('hud');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = 0, timers = [];
+
+  function fit(){
+    const s = Math.min(innerWidth/1920, innerHeight/1080);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  function clearTimers(){ timers.forEach(t => { clearTimeout(t); clearInterval(t); }); timers = []; }
+
+  // escritura animada en los bloques .ai[data-text]; conserva hijos (p. ej. el sello)
+  function typeInto(el, delay){
+    const text = el.dataset.text;
+    const extra = [...el.children].filter(c => !c.classList.contains('cur') && !c.classList.contains('txt'));
+    let txt = el.querySelector('.txt');
+    if (!txt){ txt = document.createElement('span'); txt.className = 'txt'; }
+    el.textContent = ''; el.appendChild(txt); extra.forEach(c => el.appendChild(c));
+    if (reduce){ txt.textContent = text; return; }
+    const cur = document.createElement('span'); cur.className = 'cur';
+    txt.textContent = ''; txt.appendChild(cur);
+    let n = 0;
+    timers.push(setTimeout(() => {
+      const iv = setInterval(() => {
+        n += 2;
+        txt.textContent = text.slice(0, n);
+        if (n < text.length) txt.appendChild(cur); else clearInterval(iv);
+      }, 16);
+      timers.push(iv);
+    }, delay));
+  }
+
+  // cuadrícula de "pesos" (diapositiva de entrenamiento)
+  (() => {
+    const g = document.getElementById('pesos'); if (!g) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    let k = 0;
+    for (let y = 0; y < 9; y++) for (let x = 0; x < 13; x++){
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', x*23); r.setAttribute('y', y*23); r.setAttribute('width', 18); r.setAttribute('height', 18); r.setAttribute('rx', 3);
+      r.setAttribute('class', 'w'); r.style.setProperty('--i', ((x*7 + y*5) % 20)); g.appendChild(r); k++;
+    }
+  })();
+
+  // ventana de contexto: las fichas que quedan atrás se atenúan al ritmo del marco
+  function playWindow(s){
+    const track = s.querySelector('#winTrack'); if (!track) return;
+    const cells = [...track.children];
+    const set = (start) => cells.forEach((c, k) => c.classList.toggle('old', k < start || k >= start + 6));
+    set(0);
+    if (reduce) return;
+    // el marco tarda 7 s en ir de la celda 0 a la 8 y vuelve (alternate)
+    let dir = 1, pos = 0;
+    timers.push(setTimeout(() => {
+      const iv = setInterval(() => { pos += dir; if (pos >= 8 || pos <= 0) dir = -dir; set(pos); }, 875);
+      timers.push(iv);
+    }, 2400));
+  }
+
+  // reloj
+  document.querySelectorAll('.timer').forEach(t => {
+    let iv = null;
+    const num = t.querySelector('.t-num'), lbl = t.querySelector('.t-lbl');
+    const total = +t.dataset.min * 60;
+    const show = s => { num.textContent = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); };
+    t.addEventListener('click', e => {
+      e.stopPropagation();
+      if (iv){ clearInterval(iv); iv = null; t.classList.remove('run','done'); show(total); lbl.textContent = 'Clic para iniciar'; return; }
+      let s = total; t.classList.add('run'); lbl.textContent = 'Clic para reiniciar';
+      iv = setInterval(() => { s--; show(Math.max(s,0)); if (s <= 0){ clearInterval(iv); iv = null; t.classList.remove('run'); t.classList.add('done'); lbl.textContent = 'Tiempo'; } }, 1000);
+    });
+  });
+
+  function go(n){
+    n = Math.max(0, Math.min(slides.length-1, n));
+    clearTimers();
+    slides.forEach((s, k) => { s.classList.toggle('active', k === n); s.classList.toggle('prev', k < n); });
+    const s = slides[n];
+    s.querySelectorAll('.r,.toks span,.reto li,.reto .fin,.stamp,.win-frame').forEach(e => { e.style.animation = 'none'; e.offsetWidth; e.style.animation = ''; });
+    s.querySelectorAll('.ai[data-text]').forEach(e => typeInto(e, 1200));
+    playWindow(s);
+    i = n;
+    bar.style.width = ((n+1)/slides.length*100) + '%';
+    count.textContent = `${n+1} / ${slides.length}`;
+    const a = s.querySelector('.notes');
+    notesText.textContent = a ? a.textContent.trim() : '';
+    try { history.replaceState(null, '', '#s' + (n+1)); } catch(e){}
+    canvases.forEach(c => { if (c.closest('.slide').classList.contains('active')) c._start(); });
+  }
+
+  const next = () => go(i+1), prev = () => go(i-1);
+  document.getElementById('next').onclick = next;
+  document.getElementById('prev').onclick = prev;
+  const toggleNotes = () => { notes.hidden = !notes.hidden; };
+  const toggleFull = () => {
+    try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); } catch(e){}
+  };
+  document.getElementById('nbtn').onclick = toggleNotes;
+  document.getElementById('fbtn').onclick = toggleFull;
+
+  addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('button,a')) return;
+    if (['ArrowRight','PageDown',' ','Enter'].includes(e.key)){ e.preventDefault(); next(); }
+    else if (['ArrowLeft','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); prev(); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length-1);
+    else if (e.key === 'n' || e.key === 'N') toggleNotes();
+    else if (e.key === 'f' || e.key === 'F') toggleFull();
+  });
+
+  let x0 = null;
+  addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive:true});
+  addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+    x0 = null;
+  });
+
+  let idle;
+  const wake = () => { hud.classList.remove('idle'); clearTimeout(idle); idle = setTimeout(() => hud.classList.add('idle'), 2500); };
+  addEventListener('mousemove', wake); wake();
+
+  // fibras de luz (portada y cierre)
+  const colors = ['#4a94ff','#f28c28','#3fbf6a','#b07a45','#8a94a6','#e8edf5'];
+  function fiber(canvas){
+    const ctx = canvas.getContext('2d');
+    const strands = Array.from({length: 12}, (_, k) => ({
+      c: colors[k % colors.length], y0: 80 + k*80, y1: 330 + k*14, y2: 260 + k*10,
+      pulses: Array.from({length: 2}, () => Math.random())
+    }));
+    const pt = (s, t) => [-60 + t*2040, (1-t)*(1-t)*s.y0 + 2*(1-t)*t*s.y1 + t*t*s.y2];
+    function frame(){
+      ctx.clearRect(0,0,1920,1080);
+      strands.forEach(s => {
+        ctx.beginPath();
+        for (let t=0; t<=1.0001; t+=0.02){ const [x,y] = pt(s,t); t===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y); }
+        ctx.strokeStyle = s.c; ctx.globalAlpha = .16; ctx.lineWidth = 2; ctx.stroke();
+        s.pulses.forEach((p, j) => {
+          const [x,y] = pt(s,p);
+          const g = ctx.createRadialGradient(x,y,0,x,y,26);
+          g.addColorStop(0, s.c); g.addColorStop(1, 'transparent');
+          ctx.globalAlpha = .9; ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,26,0,Math.PI*2); ctx.fill();
+          if (!reduce) s.pulses[j] = (p + 0.0025 + j*0.0008) % 1;
+        });
+      });
+      ctx.globalAlpha = 1;
+      if (!reduce && canvas.closest('.slide').classList.contains('active')) requestAnimationFrame(frame);
+      else canvas._stopped = true;
+    }
+    canvas._stopped = true;
+    canvas._start = () => { if (canvas._stopped){ canvas._stopped = false; frame(); } };
+  }
+  const canvases = [document.getElementById('fiber'), document.getElementById('fiber2')];
+  canvases.forEach(fiber);
+
+  const fromHash = () => { const m = /^#s(\d+)$/.exec(location.hash); return m ? (+m[1]-1) : 0; };
+  addEventListener('hashchange', () => { const n = fromHash(); if (n !== i) go(n); });
+  go(fromHash());
+})();
+</script>
+</body>
+</html>

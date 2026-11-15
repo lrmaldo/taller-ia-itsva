@@ -20,6 +20,9 @@ git remote add origin https://github.com/TU-USUARIO/taller-ia-itsva.git
 git push -u origin main
 ```
 
+## Presentación
+`presentacion.html` son las diapositivas del taller (27, con motion graphics sobre cómo funciona un LLM, Ollama y los modelos). Se abre desde el botón del encabezado del sitio o directo en `.../presentacion.html`. Teclas: `←` `→` o espacio para avanzar, `N` notas del ponente, `F` pantalla completa; `#s8` enlaza una diapositiva. Es un solo archivo sin dependencias; las fuentes vienen de Google Fonts y si no hay internet usa las del sistema.
+
 ## Restricciones del laboratorio (ya están aplicadas)
 - **Sin modo Agente.** La configuración generada solo declara los roles `chat` y `edit`. Los modelos pequeños no manejan herramientas y en modo agente se cuelgan.
 - **Modelos chicos.** Las tres opciones son `qwen2.5-coder` en 0.5b, 1.5b y 3b. El valor por omisión es el 1.5b.
