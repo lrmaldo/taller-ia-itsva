@@ -13,6 +13,7 @@
   let done = store.get("done", {});
   let prep = store.get("prep", {});
   let codigos = store.get("codigos", {});
+  let obs = store.get("obs", {});        // { e6: { 0: "ok", 1: "fallo", nota: "…" } }
 
   const IDS = Object.keys(T.ejercicios);
   const numero = (id) => IDS.indexOf(id) + 1;
@@ -222,6 +223,105 @@ parent.postMessage({ tipo: "listo" }, "*");
     actualizarProgreso();
   }
 
+  // ======================= registro de observación =======================
+  // El alumno marca qué hizo el modelo en cada pregunta. No afecta «Hecho»:
+  // es el dato que se comparte al cierre del día para comparar tamaños de modelo.
+  const OPCIONES_OBS = [
+    { v: "ok",      t: "Acertó",   s: "✓", c: "peer-checked:border-emerald-600 peer-checked:bg-emerald-600 peer-checked:text-white" },
+    { v: "medio",   t: "A medias", s: "~", c: "peer-checked:border-amber-500 peer-checked:bg-amber-500 peer-checked:text-white" },
+    { v: "fallo",   t: "Falló",    s: "✗", c: "peer-checked:border-rose-600 peer-checked:bg-rose-600 peer-checked:text-white" },
+    { v: "invento", t: "Inventó",  s: "!", c: "peer-checked:border-violet-600 peer-checked:bg-violet-600 peer-checked:text-white" }
+  ];
+
+  function bloqueObservar(id, e) {
+    const o = obs[id] || {};
+    const filas = e.observar.map((q, k) => `
+      <li class="rounded-lg bg-white p-3 ring-1 ring-slate-200">
+        <p class="text-sm text-slate-800"><span class="mr-1 font-semibold text-sky-700">${k + 1}.</span>${esc(q)}</p>
+        <div class="mt-2 flex flex-wrap gap-1.5" role="radiogroup" aria-label="${esc(q)}">
+          ${OPCIONES_OBS.map((op) => `
+            <label class="cursor-pointer">
+              <input type="radio" class="peer sr-only" name="obs-${id}-${k}" value="${op.v}" data-obs="${id}" data-k="${k}" ${o[k] === op.v ? "checked" : ""}>
+              <span class="inline-block rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 peer-focus-visible:ring-2 peer-focus-visible:ring-sky-500 ${op.c}">${op.t}</span>
+            </label>`).join("")}
+        </div>
+      </li>`).join("");
+    return `
+      <div class="rounded-xl border-2 border-sky-200 bg-sky-50/60 p-4">
+        <div class="mb-1 flex items-center gap-2">
+          <span class="rounded-lg bg-sky-600 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">Observa</span>
+          <span class="text-sm font-semibold text-sky-950">¿Qué hizo el modelo?</span>
+        </div>
+        <p class="mb-3 text-sm text-sky-900">Registra lo que respondió la IA, no lo que corregiste tú. Que falle no está mal: es justo lo que estamos midiendo.</p>
+        <ol class="space-y-2">${filas}</ol>
+        <textarea data-obs-nota="${id}" rows="2" class="mt-3 block w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-sky-500 focus:ring-sky-500" placeholder="Nota libre: qué te sorprendió, cuántos intentos le tomó, si tuviste que abrir otro chat…">${esc(o.nota || "")}</textarea>
+      </div>`;
+  }
+
+  function guardarObs(id, k, valor) {
+    obs[id] = obs[id] || {};
+    obs[id][k] = valor;
+    store.set("obs", obs);
+    pintarResumen();
+  }
+
+  // Resumen del día: conteos y un texto listo para copiar a la bitácora o dictar al cierre.
+  function pintarResumen() {
+    const cont = document.getElementById("obs-resumen");
+    if (!cont) return;
+    const dia = cont.dataset.dia;
+    const ids = IDS.filter((id) => T.ejercicios[id].dia === dia && T.ejercicios[id].observar);
+    const nivel = store.get("nivel", "ligero");
+    const modelo = (T.niveles[nivel] || T.niveles.ligero).chat;
+    const cuenta = { ok: 0, medio: 0, fallo: 0, invento: 0 };
+    let total = 0, marcadas = 0;
+    const lineas = ids.map((id) => {
+      const e = T.ejercicios[id], o = obs[id] || {};
+      const marcas = e.observar.map((_, k) => {
+        total++;
+        const op = OPCIONES_OBS.find((x) => x.v === o[k]);
+        if (!op) return "·";
+        marcadas++; cuenta[op.v]++;
+        return op.s;
+      }).join(" ");
+      const aciertos = e.observar.filter((_, k) => o[k] === "ok").length;
+      return `E${numero(id)} ${e.titulo}: ${marcas}  (${aciertos}/${e.observar.length})${o.nota ? "\n   Nota: " + o.nota : ""}`;
+    });
+    const texto = `Día ${dia.slice(1)} · modelo ${modelo}\n` +
+      `Acertó ${cuenta.ok} · A medias ${cuenta.medio} · Falló ${cuenta.fallo} · Inventó ${cuenta.invento}  (${marcadas} de ${total} registradas)\n` +
+      `Clave: ✓ acertó  ~ a medias  ✗ falló  ! inventó  · sin registrar\n\n` + lineas.join("\n");
+
+    const pct = total ? Math.round((cuenta.ok / total) * 100) : 0;
+    $("#obs-modelo").value = nivel;
+    $("#obs-conteos").innerHTML = OPCIONES_OBS.map((op) => `
+      <div data-conteo="${op.v}" class="rounded-xl bg-white px-3 py-2 text-center ring-1 ring-slate-200">
+        <p class="text-2xl font-bold tabular-nums text-slate-900">${cuenta[op.v]}</p>
+        <p class="text-xs font-medium text-slate-500">${op.t}</p>
+      </div>`).join("");
+    $("#obs-pct").textContent = `${pct}% de aciertos limpios · ${marcadas} de ${total} preguntas registradas`;
+    $("#obs-texto").textContent = texto;
+  }
+
+  function seccionResumen(d) {
+    const tiene = IDS.some((id) => T.ejercicios[id].dia === d.id && T.ejercicios[id].observar);
+    if (!tiene) return "";
+    const opciones = Object.entries(T.niveles)
+      .map(([k, v]) => `<option value="${k}">${esc(v.chat)} (${esc(v.nombre)})</option>`).join("");
+    return `
+      <div id="obs-resumen" data-dia="${d.id}" class="scroll-mt-24 space-y-4 rounded-2xl border-2 border-sky-300 bg-sky-50 p-5">
+        <div>
+          <h3 class="text-lg font-bold text-sky-950">Tu resumen del día: ¿cómo le fue al modelo?</h3>
+          <p class="mt-1 text-sm text-sky-900">Se arma solo con lo que registraste en cada «Observa». Al cierre lo compartimos para comparar modelos de distinto tamaño.</p>
+        </div>
+        <label class="block text-sm font-medium text-slate-700">Modelo que usaste hoy
+          <select id="obs-modelo" class="mt-1 block w-full rounded-xl border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:w-auto">${opciones}</select>
+        </label>
+        <div id="obs-conteos" class="grid grid-cols-2 gap-2 sm:grid-cols-4"></div>
+        <p id="obs-pct" class="text-sm font-semibold text-sky-900"></p>
+        ${bloqueCodigo("obs-texto", "", "Para tu bitácora")}
+      </div>`;
+  }
+
   // ======================= progreso =======================
   function actualizarProgreso() {
     const n = IDS.filter((k) => done[k]).length;
@@ -415,6 +515,7 @@ parent.postMessage({ tipo: "listo" }, "*");
         </div>
 
         ${bloqueCodigo("pr-" + id, e.prompt, etiquetaPrompt)}
+        ${e.observar ? bloqueObservar(id, e) : ""}
         ${reto}
 
         <div>
@@ -471,6 +572,7 @@ parent.postMessage({ tipo: "listo" }, "*");
         </div>
         ${notas}
         <div class="space-y-5">${tarjetas}</div>
+        ${seccionResumen(d)}
       </section>`;
   }
 
@@ -564,6 +666,7 @@ parent.postMessage({ tipo: "listo" }, "*");
       if (ta) ta.value = codigos[eid] || T.ejercicios[eid].reto.plantilla;
     });
 
+    pintarResumen();
     actualizarProgreso();
   }
 
@@ -620,13 +723,18 @@ parent.postMessage({ tipo: "listo" }, "*");
   document.addEventListener("change", (ev) => {
     const d = ev.target.closest("[data-done]");
     if (d) { marcarHecho(d.dataset.done, d.checked); return; }
+    const ob = ev.target.closest("[data-obs]");
+    if (ob) { guardarObs(ob.dataset.obs, ob.dataset.k, ob.value); return; }
+    if (ev.target.id === "obs-modelo") { store.set("nivel", ev.target.value); pintarResumen(); return; }
     const p = ev.target.closest("[data-prep]");
     if (p) { prep[p.dataset.prep] = p.checked; store.set("prep", prep); }
   });
 
   document.addEventListener("input", (ev) => {
     const ta = ev.target.closest("[id^='cod-']");
-    if (ta) { codigos[ta.id.slice(4)] = ta.value; store.set("codigos", codigos); }
+    if (ta) { codigos[ta.id.slice(4)] = ta.value; store.set("codigos", codigos); return; }
+    const nota = ev.target.closest("[data-obs-nota]");
+    if (nota) { guardarObs(nota.dataset.obsNota, "nota", nota.value); }
   });
 
   // Acepta #d2 (una pestaña) o #ej-e6 (abre el día de ese ejercicio y baja hasta él).

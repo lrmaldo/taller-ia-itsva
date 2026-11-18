@@ -31,6 +31,9 @@ git push -u origin main
 ## Retos autoevaluables
 Siete ejercicios traen un recuadro donde el alumno pega el código que le dio la IA y lo ejecuta contra casos de prueba. Todo corre en el navegador del alumno: dentro de un iframe `sandbox` (origen opaco, sin acceso a la página ni a su localStorage) y, dentro de él, en un Web Worker, para que un bucle infinito no congele la pestaña y el límite de 4 segundos pueda detenerlo. No se envía nada a ningún servidor. Cada caso muestra ✓/✗ con lo esperado y lo devuelto; al pasar todos, el ejercicio se marca como hecho.
 
+## Día 2: observar al modelo
+Los modelos locales chicos no resuelven de forma confiable «encuentra todos los errores» o «refactoriza todo», así que el día 2 no les pide eso: cada ejercicio (6 a 10) parte la tarea en preguntas pequeñas y trae un recuadro **Observa** donde el alumno marca, por pregunta, si el modelo *Acertó*, *A medias*, *Falló* o *Inventó*. El alumno cierra lo que el modelo no resolvió y el reto verifica su código. Al final de la pestaña Día 2 se arma un resumen con conteos y un texto para la bitácora; a las 13:30 se comparan los resultados por tamaño de modelo (0.5b / 1.5b / 3b). Las marcas se guardan en el navegador y no afectan el «Hecho».
+
 ## Modo instructor
 Agrega `?i=1` a la dirección (`.../index.html?i=1#d2`) para ver notas por día y por ejercicio, los bugs sembrados y la solución de referencia de cada reto (con botón para cargarla en el editor). No es seguridad: cualquiera que conozca el parámetro lo ve.
 

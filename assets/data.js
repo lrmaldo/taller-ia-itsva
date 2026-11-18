@@ -52,21 +52,23 @@ window.TALLER = {
     },
     {
       id: "d2", corto: "Día 2", fecha: "Miércoles 18 de noviembre",
-      titulo: "Depurar, refactorizar, probar y asegurar",
-      objetivo: "Usar la IA sobre código que ya existe: encontrar errores, mejorarlo, escribir pruebas y revisar seguridad, verificando siempre el resultado.",
+      titulo: "Observar a la IA sobre código real",
+      objetivo: "Hoy no esperamos que el modelo lo resuelva todo: lo ponemos a prueba con preguntas pequeñas y registramos qué acierta, qué falla y qué inventa. Tú cierras la brecha y el reto verifica tu código.",
       agenda: [
-        { hora: "7:00–7:20",   tipo: "teoria",   titulo: "Repaso y calentamiento", detalle: "Revisión de bitácoras del día 1: ¿qué prompt falló y por qué?" },
-        { hora: "7:20–8:30",   tipo: "practica", titulo: "Depuración guiada", detalle: "Leer la consola del navegador, dar contexto y corregir de uno en uno.", ejercicios: ["e6"] },
-        { hora: "8:30–9:30",   tipo: "practica", titulo: "Refactorización sin romper nada", detalle: "Mismo comportamiento, mejor código: de var y bucles anidados a funciones claras.", ejercicios: ["e7"] },
+        { hora: "7:00–7:20",   tipo: "teoria",   titulo: "Repaso y cómo vamos a observar", detalle: "Bitácoras del día 1. Cada ejercicio de hoy trae un registro «Observa»: marcas Acertó, A medias, Falló o Inventó por cada pregunta." },
+        { hora: "7:20–8:30",   tipo: "practica", titulo: "¿Encuentra los cuatro errores?", detalle: "Una función por prompt. Registras cuáles encontró y corriges tú los que no.", ejercicios: ["e6"] },
+        { hora: "8:30–9:30",   tipo: "practica", titulo: "Refactorizar en pasos pequeños", detalle: "Un cambio por prompt y el reto después de cada uno: ¿en qué paso rompe la salida?", ejercicios: ["e7"] },
         { hora: "9:30–9:45",   tipo: "descanso", titulo: "Descanso" },
-        { hora: "9:45–11:00",  tipo: "practica", titulo: "Pruebas con IA", detalle: "La IA escribe las pruebas; tú decides si el error está en el código o en la prueba.", ejercicios: ["e8"] },
+        { hora: "9:45–11:00",  tipo: "practica", titulo: "¿Detecta los bugs… o los inventa?", detalle: "Cinco funciones; dos están bien a propósito. ¿Distingue unas de otras?", ejercicios: ["e8"] },
         { hora: "11:00–12:00", tipo: "comida",   titulo: "Comida" },
-        { hora: "12:00–13:00", tipo: "practica", titulo: "Documentar sin inventar", detalle: "JSDoc y README verificados contra el código.", ejercicios: ["e9"] },
-        { hora: "13:00–14:00", tipo: "practica", titulo: "Seguridad en el navegador", detalle: "XSS, eval, secretos en el código y datos en localStorage.", ejercicios: ["e10"] }
+        { hora: "12:00–12:30", tipo: "practica", titulo: "Documentar: cuenta lo que inventa", detalle: "JSDoc de una función con bug: ¿describe el código o repite el comentario?", ejercicios: ["e9"] },
+        { hora: "12:30–13:30", tipo: "practica", titulo: "¿Qué vulnerabilidades ve?", detalle: "Cinco fallas sembradas. Demuestras el XSS a mano y lo corriges con su ayuda.", ejercicios: ["e10"] },
+        { hora: "13:30–14:00", tipo: "cierre",   titulo: "Comparar modelos", detalle: "Cada quien lee su resumen del día (al final de esta pestaña). Comparamos 0.5b, 1.5b y 3b: ¿dónde acertó cada uno?" }
       ],
       instructor: [
-        "E6: que no pidan «arréglalo todo». Un error a la vez, recargando la página después de cada cambio.",
-        "E8: el momento clave es cuando una prueba falla porque el código está mal, no la prueba. Detente ahí y hazlo notar.",
+        "Mensaje del día: que la IA falle NO es que el ejercicio salió mal; es el dato que estamos midiendo. Lo que se califica es el registro y el reto en verde con su propio código.",
+        "Que no pidan «arréglalo todo»: los prompts ya vienen partidos en preguntas pequeñas. Chat nuevo si el modelo empieza a perderse.",
+        "Para el cierre: dibuja en el pizarrón una tabla con columnas 0.5b / 1.5b / 3b y filas E6 a E10; cada alumno dicta sus aciertos. Es la conclusión empírica del día.",
         "E10: la demostración de XSS es sobre el archivo de práctica; deja claro que no se prueba en sitios ajenos."
       ]
     },
@@ -230,23 +232,30 @@ function calcularCuenta(subtotal, propinaPct) {
     },
 
     e6: {
-      titulo: "Depurar un archivo con cuatro errores", dia: "d2", minutos: 70,
-      objetivo: "Corregir todos los errores de uno en uno, verificando en el navegador después de cada cambio.",
+      titulo: "¿Encuentra los cuatro errores?", dia: "d2", minutos: 70,
+      objetivo: "Medir qué tan bien localiza errores un modelo pequeño cuando le preguntas por una función a la vez, y corregir tú lo que no encuentre.",
       pasos: [
-        "Abre <code>e06-debug.html</code> con Live Server y abre la consola del navegador (<kbd>F12</kbd>).",
-        "Usa el prompt con el archivo adjunto para obtener la lista de errores.",
-        "Aplica <b>un</b> arreglo, guarda, recarga y verifica. Repite hasta que los cuatro números sean correctos.",
-        "Junta tus cuatro funciones corregidas en una sola función <code>estadisticas(ventas)</code> y pégala en el reto."
+        "Abre <code>e06-debug.html</code> con Live Server y la consola (<kbd>F12</kbd>). Anota los cuatro valores que muestra.",
+        "Chat nuevo, adjunta el archivo con <kbd>@</kbd> y usa el <b>PROMPT 1</b> (solo la función <code>total</code>). Registra abajo qué respondió.",
+        "Sigue con los prompts 2, 3 y 4, uno por función. Si el modelo empieza a divagar, abre un chat nuevo.",
+        "Aplica tú cada arreglo, recarga y verifica. Junta las funciones corregidas en <code>estadisticas(ventas)</code> y pégala en el reto."
       ],
-      prompt: "@e06-debug.js Este archivo debería mostrar Total: 1250, Promedio: 250, Mayor venta: 600 y Ventas sobre el promedio: 2, pero muestra 1150, 287.5, 100 y 0. Encuentra TODOS los errores. Para cada uno dime: en qué línea está, por qué ocurre y cuál es el arreglo mínimo. No reescribas el archivo completo.\n\nCuando ya estén corregidos, júntalos en una sola función estadisticas(ventas) que devuelva un objeto { total, promedio, mayor, sobrePromedio }.",
+      prompt: "PROMPT 1\n@e06-debug.js Mira SOLO la función total. Con [100, 600, 300, 150, 100] debería devolver 1250 pero devuelve 1150. ¿Qué línea está mal y por qué? Responde en máximo 3 líneas.\n\nPROMPT 2\nAhora SOLO la función promedio. Debería ser el total entre 5 ventas (250) y da otra cosa. ¿Qué línea está mal? Máximo 3 líneas.\n\nPROMPT 3\nAhora SOLO mayorVenta. Debería dar 600 y da 100. ¿Qué línea está mal? Máximo 3 líneas.\n\nPROMPT 4\nAhora SOLO ventasSobrePromedio. Debería dar 2 y da 0. ¿Qué línea está mal? Máximo 3 líneas.",
+      observar: [
+        "total: ¿señaló que el bucle empieza en 1 y se salta la primera venta?",
+        "promedio: ¿señaló la división entre length - 1?",
+        "mayorVenta: ¿señaló la comparación al revés (< en vez de >)?",
+        "ventasSobrePromedio: ¿notó que compara contra la función promedio y no contra su resultado?",
+        "Se limitó a lo que preguntaste: no inventó errores ni reescribió el archivo completo"
+      ],
       exito: [
+        "Registraste las cinco observaciones",
         "La página muestra los cuatro valores correctos",
-        "El reto queda en verde",
-        "Explicas cada error con tus palabras, sin mirar la respuesta de la IA"
+        "El reto queda en verde con tu código"
       ],
       archivos: ["e06-debug.js", "e06-debug.html"],
-      pista: "Hay cuatro: un bucle que arranca en el índice equivocado, una división entre el número equivocado, una comparación al revés y una función a la que le faltan los paréntesis al usarla.",
-      instructor: "Los 4 errores: `let i = 1` omite la primera venta; `ventas.length - 1` en promedio; `if (v < mayor)` debería ser `>`; `v > promedio` compara contra la función, no contra su resultado (en JS no truena: da NaN y devuelve 0).",
+      pista: "El de ventasSobrePromedio es el que más fallan los modelos chicos: en JavaScript comparar un número con una función no truena, solo da false. Si la IA no lo ve, busca dónde se usa promedio sin paréntesis.",
+      instructor: "Los 4 errores: `let i = 1` omite la primera venta; `ventas.length - 1` en promedio; `if (v < mayor)` debería ser `>`; `v > promedio` compara contra la función, no contra su resultado (en JS no truena: da false y devuelve 0). Lo esperable con 0.5b/1.5b: 2 o 3 de 4; el cuarto casi nunca. Ese hueco es la lección.",
       reto: {
         fn: "estadisticas",
         plantilla: "// Junta aquí tus funciones corregidas\nfunction estadisticas(ventas) {\n  return { total: 0, promedio: 0, mayor: 0, sobrePromedio: 0 };\n}",
@@ -269,23 +278,30 @@ function calcularCuenta(subtotal, propinaPct) {
     },
 
     e7: {
-      titulo: "Refactorizar sin cambiar el comportamiento", dia: "d2", minutos: 60,
-      objetivo: "Mejorar la legibilidad con ayuda de la IA y demostrar que la salida sigue siendo exactamente la misma.",
+      titulo: "Refactorizar en pasos pequeños", dia: "d2", minutos: 60,
+      objetivo: "Descubrir en qué paso de una refactorización el modelo cambia la salida sin avisar, usando el reto como red de seguridad.",
       pasos: [
-        "Abre <code>e07-refactor.html</code> y copia la salida original a un archivo de texto.",
-        "Selecciona el contenido de <code>e07-refactor.js</code> y pide la refactorización con el prompt.",
-        "Recarga la página y compara línea por línea contra la salida que guardaste.",
-        "Pega tu función refactorizada en el reto: compara el arreglo completo, incluido el empate."
+        "Línea base: copia la función <code>p</code> de <code>e07-refactor.js</code>, pégala en el reto cambiando su nombre a <code>generarReporte</code> y ejecútala. Debe quedar en verde.",
+        "Selecciona la función en VS Code, <kbd>Ctrl</kbd>+<kbd>I</kbd> con el <b>PROMPT 1</b>. Pega el resultado en el reto y ejecútalo. Registra si siguió en verde.",
+        "Repite con los prompts 2, 3 y 4, siempre sobre la versión anterior. Si un paso rompe el reto, díselo a la IA con el caso que falló o rechaza el cambio.",
+        "Al final compara tu versión con la original: ¿se lee mejor? ¿Cuántos pasos tuviste que corregir?"
       ],
-      prompt: "Refactoriza este código JavaScript para que sea legible y mantenible: nombres descriptivos, const y let en lugar de var, métodos de arreglo en lugar de bucles anidados, constantes con nombre en lugar de números sueltos, y funciones pequeñas con una sola responsabilidad.\nNO cambies el comportamiento: la salida debe ser idéntica, incluido el caso de empate en el mejor promedio.\nDeja la función principal con el nombre generarReporte(grupo) y que devuelva el arreglo de cadenas.",
+      prompt: "PROMPT 1\nCambia todos los var por const o let. No cambies nada más.\n\nPROMPT 2\nRenombra las variables de una letra con nombres descriptivos en español (d → grupo, x → alumno, a → promedio, n → nivel…). La función se sigue llamando generarReporte. No cambies la lógica.\n\nPROMPT 3\nExtrae una función promedioDe(calificaciones) y úsala en los dos lugares donde se calcula el promedio. No cambies nada más.\n\nPROMPT 4\nReemplaza los if anidados del nivel por una función nivelDe(promedio). Conserva exactamente los mismos rangos y textos.",
+      observar: [
+        "Paso 1 (var → const/let): ¿el reto siguió en verde?",
+        "Paso 2 (nombres): ¿siguió en verde y usó los nombres que pediste?",
+        "Paso 3 (promedioDe): ¿siguió en verde?",
+        "Paso 4 (nivelDe): ¿conservó los rangos y el empate entre Ana y Marta?",
+        "Hizo solo lo que pediste en cada paso, sin cambios extra"
+      ],
       exito: [
-        "El reto en verde: la salida es idéntica a la original",
-        "El código nuevo usa const/let y funciones con nombres claros",
-        "Ana sigue siendo el mejor promedio aunque Marta tenga el mismo número"
+        "Registraste los cinco pasos",
+        "Tu versión final en verde en el reto",
+        "Puedes decir en qué paso se rompió algo y por qué (si se rompió)"
       ],
       archivos: ["e07-refactor.js", "e07-refactor.html"],
       pista: "Ana y Marta empatan en 91.7. Si tu versión devuelve Marta, la comparación pasó de «mayor que» a «mayor o igual». Pídele conservar al primero en caso de empate.",
-      instructor: "Lo que suele romperse: el empate (>= en lugar de >, o un sort que no es estable a ojos del alumno), y toFixed omitido en «Mejor promedio». Ambos los atrapa el reto. Remarca que «refactorizar» significa misma salida exacta.",
+      instructor: "Paso 1: es muy común que ponga const a variables que se reasignan (t, m, q) y truene con «Assignment to constant variable»: el reto lo muestra en rojo, excelente para observar. Paso 4: puede cambiar >= por > en los rangos. Si alguien quiere el empate como reto extra, que pida «usa sort para encontrar el mejor» y vea cómo cambia a Marta.",
       reto: {
         fn: "generarReporte",
         plantilla: "// Pega aquí tu versión refactorizada\nfunction generarReporte(grupo) {\n\n}",
@@ -340,23 +356,31 @@ function generarReporte(grupo) {
     },
 
     e8: {
-      titulo: "Pruebas: ¿falla el código o falla la prueba?", dia: "d2", minutos: 75,
-      objetivo: "Dejar que la IA escriba las pruebas y decidir tú quién tiene la razón cuando una falla.",
+      titulo: "¿Detecta los bugs… o los inventa?", dia: "d2", minutos: 75,
+      objetivo: "Comprobar si el modelo distingue código correcto de código con errores. Algunas de las cinco funciones están bien a propósito.",
       pasos: [
-        "Abre <code>e08-funciones.js</code> y lee los comentarios: dicen lo que cada función <b>debería</b> hacer.",
-        "Pide las pruebas con el prompt. Guárdalas en <code>e08-pruebas.js</code> y ejecútalas desde una página o con la consola.",
-        "Por cada prueba que falle decide: ¿el error está en la función o en la prueba? Corrige lo que corresponda.",
-        "Pega tus tres funciones corregidas en el reto."
+        "Abre <code>e08-funciones.js</code>. Cada comentario dice lo que la función <b>debería</b> hacer.",
+        "Chat nuevo. Selecciona <b>una</b> función, <kbd>Ctrl</kbd>+<kbd>L</kbd> y usa el <b>PROMPT 1</b>. Anota su veredicto. Repite con las cinco.",
+        "Comprueba tú cada veredicto: pega el archivo completo en la consola del navegador (<kbd>F12</kbd>) y llama a la función con la entrada que propuso la IA. Registra abajo si su veredicto fue correcto.",
+        "Corrige las funciones que sí tienen error (con o sin la IA) y pega esas tres en el reto."
       ],
-      prompt: "@e08-funciones.js Escribe pruebas en JavaScript puro (sin librerías) para todas las funciones de este archivo. Usa una función auxiliar probar(descripcion, resultado, esperado) que imprima en consola si pasa o falla.\nCubre casos normales, casos borde (vacío, cero, negativos, los límites exactos) y los errores que el comentario promete.\nImportante: si encuentras una función que NO hace lo que dice su comentario, NO ajustes la prueba para que pase. Avísame del bug y déjalo marcado.",
+      prompt: "PROMPT 1 (una función a la vez)\n¿Esta función hace exactamente lo que dice su comentario? Responde SÍ o NO. Si es NO, dame una entrada concreta con la que falla, qué devuelve y qué debería devolver.\n\nPROMPT 2 (opcional, si te sobra tiempo)\nEscribe 4 llamadas de prueba para esta función con console.log, incluyendo un caso límite, y al lado el resultado que debería dar según el comentario.",
+      observar: [
+        "esPalindromo: ¿su veredicto fue correcto?",
+        "calcularDescuento: ¿su veredicto fue correcto?",
+        "validarContrasena: ¿su veredicto fue correcto?",
+        "clasificarTriangulo: ¿su veredicto fue correcto?",
+        "formatoMoneda: ¿su veredicto fue correcto?",
+        "Cuando dijo NO, la entrada que propuso de verdad demostraba el error"
+      ],
       exito: [
-        "Al menos 12 pruebas ejecutándose",
-        "Encontraste los tres bugs reales y los corregiste en el código, no en las pruebas",
+        "Registraste el veredicto de las cinco funciones, comprobado en la consola",
+        "Sabes cuáles estaban bien y cuáles no, sin depender de lo que dijo la IA",
         "El reto queda en verde"
       ],
       archivos: ["e08-funciones.js"],
-      pista: "Prueba una contraseña de exactamente 8 caracteres, un triángulo de lados 1, 2 y 10, y formatea 1234.5.",
-      instructor: "Bugs sembrados: validarContrasena usa `> 8` y el comentario dice «al menos 8»; clasificarTriangulo nunca valida la desigualdad triangular ni lados ≤ 0 pese a prometer Error; formatoMoneda no pone separador de miles («$1234.50» en vez de «$1,234.50»). esPalindromo y calcularDescuento sí están bien: sirven para ver que no todo lo que la IA toca está roto.",
+      pista: "Dos de las cinco están bien. Para comprobar las otras: una contraseña de exactamente 8 caracteres, un triángulo de lados 1, 2 y 10, y formatoMoneda(1234.5).",
+      instructor: "Bugs sembrados: validarContrasena usa `> 8` y el comentario dice «al menos 8»; clasificarTriangulo nunca valida la desigualdad triangular ni lados ≤ 0 pese a prometer Error; formatoMoneda no pone separador de miles («$1234.50» en vez de «$1,234.50»). esPalindromo y calcularDescuento sí están bien: son el control. Lo más revelador del día es cuando el modelo «encuentra» un bug en una de ellas (falso positivo) o declara correcta a clasificarTriangulo porque leyó el comentario y no el código.",
       reto: {
         fn: "validarContrasena",
         plantilla: "// Pega aquí tus tres funciones corregidas\nfunction validarContrasena(pwd) {\n\n}\n\nfunction clasificarTriangulo(a, b, c) {\n\n}\n\nfunction formatoMoneda(n) {\n\n}",
@@ -392,34 +416,49 @@ function formatoMoneda(n) {
     },
 
     e9: {
-      titulo: "Documentar sin inventar", dia: "d2", minutos: 55,
-      objetivo: "Generar documentación útil y cazar las afirmaciones que el código no respalda.",
+      titulo: "Documentar: cuenta lo que inventa", dia: "d2", minutos: 30,
+      objetivo: "Ver si el modelo documenta lo que el código hace o lo que el comentario dice que hace.",
       pasos: [
-        "Usa tu versión refactorizada del ejercicio 7 o el archivo <code>e08-funciones.js</code> ya corregido.",
-        "Pide JSDoc y README con el prompt.",
-        "Revisa afirmación por afirmación: marca cada una como verdadera o inventada.",
-        "Corrige lo inventado y escribe en una línea qué aprendiste."
+        "Abre el <code>e08-funciones.js</code> <b>original</b> (sin tus correcciones; vuelve a descargarlo si hace falta).",
+        "Borra el comentario de arriba de <code>clasificarTriangulo</code>, selecciona la función y usa el <b>PROMPT 1</b> con <kbd>Ctrl</kbd>+<kbd>I</kbd>.",
+        "Haz lo mismo con <code>formatoMoneda</code> usando el <b>PROMPT 2</b>, pero esta vez <b>deja</b> el comentario original.",
+        "Compara cada JSDoc contra el código, línea por línea, y registra abajo."
       ],
-      prompt: "Genera comentarios JSDoc en español para cada función de este archivo y un README.md breve con: qué hace, cómo abrirlo en el navegador y un ejemplo de uso.\nDescribe SOLO lo que el código hace de verdad. No inventes funcionalidades, parámetros opcionales, validaciones ni dependencias que no estén en el código.",
+      prompt: "PROMPT 1 (sin el comentario original)\nEscribe un comentario JSDoc en español para esta función. Describe SOLO lo que el código hace de verdad: parámetros, valor de retorno y si lanza errores.\n\nPROMPT 2 (con el comentario original)\nReemplaza el comentario de esta función por un JSDoc en español. Describe SOLO lo que el código hace de verdad.",
+      observar: [
+        "clasificarTriangulo: describió bien qué recibe y qué devuelve",
+        "clasificarTriangulo: no afirmó que lanza un Error (el código nunca lo lanza)",
+        "formatoMoneda: no afirmó que pone separador de miles (el código no lo hace)",
+        "No inventó parámetros opcionales, valores por omisión ni validaciones"
+      ],
       exito: [
-        "Todas las funciones tienen JSDoc y existe un README",
-        "Encontraste y corregiste al menos una afirmación inventada"
+        "Registraste las cuatro observaciones",
+        "Puedes explicar por qué el comentario original «contagió» o no a la documentación"
       ],
-      pista: "Lo más común: documentación que promete «maneja errores» o «valida la entrada» cuando el código no lo hace. Búscalo."
+      pista: "Lo más común: el JSDoc repite la promesa del comentario («lanza Error si no es triángulo», «1234.5 → $1,234.50») aunque el código no lo haga. Por eso la documentación también se verifica contra el código.",
+      instructor: "Diseñado para mostrar el sesgo hacia el comentario: con el comentario presente casi siempre copia «$1,234.50». Sin él, a veces sí describe el código real. Comparar ambos casos en voz alta toma 5 minutos y deja muy clara la idea."
     },
 
     e10: {
-      titulo: "Seguridad en el navegador", dia: "d2", minutos: 60,
-      objetivo: "Detectar vulnerabilidades web, demostrar una en el archivo de práctica y corregirla.",
+      titulo: "¿Qué vulnerabilidades ve el modelo?", dia: "d2", minutos: 60,
+      objetivo: "Medir cuántas de cinco fallas sembradas detecta el modelo, demostrar una tú mismo y corregirla con su ayuda.",
       pasos: [
         "Abre <code>e10-seguridad.html</code> con Live Server. Es código con fallas puestas a propósito.",
-        "Antes de pedir nada: publica un comentario cuyo texto sea <code>&lt;img src=x onerror=\"alert('XSS')\"&gt;</code> y mira qué pasa.",
-        "Pide la revisión completa con el prompt.",
-        "Escribe la función <code>escaparHTML</code> con ayuda de la IA, pégala en el reto y después aplícala en el archivo. Repite la demostración: ya no debe saltar la alerta."
+        "Antes de preguntar nada: publica un comentario cuyo texto sea <code>&lt;img src=x onerror=\"alert('XSS')\"&gt;</code> y mira qué pasa.",
+        "Chat nuevo con el <b>PROMPT 1</b>. Registra abajo cuáles de las cinco fallas mencionó (no cuentan las que tú le sugieras después).",
+        "Pide la función con el <b>PROMPT 2</b>, pégala en el reto y, ya en verde, úsala en <code>pintarComentarios</code>. Repite la demostración: la alerta ya no debe saltar."
       ],
-      prompt: "@e10-seguridad.js Actúa como revisor de seguridad web. Lista las vulnerabilidades ordenadas por gravedad. Para cada una: dónde está, cómo se explota con un ejemplo concreto de entrada, y el arreglo.\nDespués escríbeme solo la función escaparHTML(texto) que convierta &, <, > y comillas dobles en sus entidades HTML, para usarla antes de insertar texto del usuario.",
+      prompt: "PROMPT 1\n@e10-seguridad.js ¿Qué problemas de seguridad tiene este código? Haz una lista corta: función, problema y por qué es peligroso.\n\nPROMPT 2\nEscribe solo la función escaparHTML(texto) que convierta &, <, > y comillas dobles en sus entidades HTML. Sin explicación.",
+      observar: [
+        "Mencionó el XSS: innerHTML con texto del usuario en pintarComentarios",
+        "Mencionó el uso de eval en calcular",
+        "Mencionó la contraseña y la API key escritas en el código",
+        "Mencionó que esAdmin se puede falsificar desde localStorage",
+        "Mencionó la consulta SQL armada concatenando texto (buscarUsuario)",
+        "Su escaparHTML pasó el reto al primer intento"
+      ],
       exito: [
-        "Identificaste XSS por innerHTML, uso de eval, contraseña y clave en el código, y confianza en un valor de localStorage para dar permisos de administrador",
+        "Registraste cuántas de las cinco fallas detectó",
         "La alerta salta antes del arreglo y ya no después",
         "El reto queda en verde"
       ],

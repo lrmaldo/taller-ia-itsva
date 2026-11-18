@@ -94,6 +94,15 @@ function servir() {
     check(r.estado === "timeout" && r.ms >= 3900 && r.ms < 6500, `bucle infinito atrapado por el timeout (${r.ms} ms)`);
     check(await page.evaluate(() => document.querySelectorAll("iframe").length === 0), "el iframe del ejecutor se eliminó");
 
+    // 3b. E7: la línea base (función p original renombrada) debe pasar, como dice el paso 1
+    if (id === "e7") {
+      const src = fs.readFileSync(path.join(ROOT, "practicas/e07-refactor.js"), "utf8");
+      const p = src.slice(src.indexOf("function p(d)"), src.indexOf("const GRUPO")).replace("function p(d)", "function generarReporte(d)");
+      r = await correr(id, p);
+      check(r.estado === "aprobado", `línea base: la función original renombrada pasa el reto (${r.ok}/${e.reto.casos.length})`);
+      await page.uncheck(`[data-done="${id}"]`);
+    }
+
     // 4. correcta
     r = await correr(id, e.reto.solucion);
     check(r.estado === "aprobado" && r.ok === e.reto.casos.length && r.mal === 0, `correcta: ${r.ok}/${e.reto.casos.length} casos en ✓`);
@@ -119,13 +128,34 @@ function servir() {
   check(/apiBase: http:\/\/192\.168\.1\.50:11434/.test(yaml), "YAML servidor: apiBase con la IP");
   await page.selectOption("#cfg-nivel", "medio");
   check(/qwen2\.5-coder:3b/.test(await page.textContent("#cfg-yaml")), "nivel Medio usa el 3b");
-  for (const [h, texto] of [["d1", "Fundamentos"], ["d2", "Depurar"], ["d3", "Proyecto"], ["ref", "Referencia"]]) {
+  for (const [h, texto] of [["d1", "Fundamentos"], ["d2", "Observar"], ["d3", "Proyecto"], ["ref", "Referencia"]]) {
     await page.goto(`${base}#${h}`);
     await page.waitForSelector("#app h2");
     check((await page.textContent("#app h2")).includes(texto), `pestaña #${h}`);
   }
   await page.goto(`${base}#d2`);
   check((await page.locator("#modo-instructor").isHidden()) && (await page.locator("[id^='sol-']").count()) === 0, "sin ?i=1 no hay notas ni soluciones");
+
+  console.log("\n■ Registro de observación (día 2)");
+  const obsD2 = Object.values(T.ejercicios).filter((e) => e.dia === "d2" && e.observar);
+  const preguntas = obsD2.reduce((n, e) => n + e.observar.length, 0);
+  check(obsD2.length === 5, `5 ejercicios del día 2 con «Observa» (${obsD2.length})`);
+  check((await page.locator("input[data-obs]").count()) === preguntas * 4, `${preguntas} preguntas × 4 opciones en la página`);
+  await page.click('label:has(input[name="obs-e6-0"][value="ok"])');
+  await page.click('label:has(input[name="obs-e6-3"][value="fallo"])');
+  await page.click('label:has(input[name="obs-e8-0"][value="invento"])');
+  await page.fill('[data-obs-nota="e6"]', "El cuarto error no lo vio");
+  check((await page.textContent('[data-conteo="ok"] p')).trim() === "1" && (await page.textContent('[data-conteo="invento"] p')).trim() === "1", "el resumen cuenta las marcas al momento");
+  await page.reload();
+  await page.waitForSelector("#obs-resumen");
+  check(await page.isChecked('input[name="obs-e6-3"][value="fallo"]'), "las marcas persisten tras recargar");
+  const txt = await page.textContent("#obs-texto");
+  check(/E6 .*: ✓ · · ✗ ·\s+\(1\/5\)/.test(txt) && /El cuarto error no lo vio/.test(txt), "texto para bitácora con marcas y nota");
+  await page.selectOption("#obs-modelo", "minimo");
+  check(/modelo qwen2\.5-coder:0\.5b/.test(await page.textContent("#obs-texto")), "el resumen refleja el modelo elegido");
+  await page.goto(`${base}#d1`);
+  await page.waitForSelector("#app h2");
+  check((await page.locator("#obs-resumen").count()) === 0, "el día 1 no muestra resumen de observación");
   check(!/cdn/i.test(fs.readFileSync(path.join(ROOT, "index.html"), "utf8")), "index.html sin CDN");
 
   console.log("\n■ Móvil (375 px)");

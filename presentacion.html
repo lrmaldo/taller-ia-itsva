@@ -381,13 +381,14 @@ kbd{align-self:flex-start;font-family:var(--mono);font-size:20px;padding:6px 12p
       </ul>
     </div>
     <div class="day r" style="--d:.5s;--c:var(--orange)">
-      <span class="k">Miércoles 18 · Día 2</span><h3>Depurar, refactorizar, probar y asegurar</h3>
+      <span class="k">Miércoles 18 · Día 2</span><h3>Observar a la IA sobre código real</h3>
       <ul>
-        <li class="hot"><b>7:20</b>Depuración guiada · Ejercicio 6</li>
-        <li class="hot"><b>8:30</b>Refactorizar sin romper nada · 7</li>
-        <li class="hot"><b>9:45</b>¿Falla el código o la prueba? · 8</li>
-        <li class="hot"><b>12:00</b>Documentar sin inventar · 9</li>
-        <li class="hot"><b>13:00</b>Seguridad en el navegador · 10</li>
+        <li class="hot"><b>7:20</b>¿Encuentra los cuatro errores? · Ejercicio 6</li>
+        <li class="hot"><b>8:30</b>Refactorizar en pasos pequeños · 7</li>
+        <li class="hot"><b>9:45</b>¿Detecta los bugs o los inventa? · 8</li>
+        <li class="hot"><b>12:00</b>Documentar: cuenta lo que inventa · 9</li>
+        <li class="hot"><b>12:30</b>¿Qué vulnerabilidades ve? · 10</li>
+        <li><b>13:30</b>Comparar modelos: 0.5b vs 1.5b vs 3b</li>
       </ul>
     </div>
     <div class="day r" style="--d:.65s;--c:var(--green)">
@@ -859,16 +860,18 @@ models:
 
 <!-- 23 · DÍA 2 -->
 <section class="slide">
-  <p class="eyebrow r">Día 2 · Código que ya existe</p>
-  <h2 class="h-l r" style="--d:.1s">La IA sobre código ajeno: encontrar, mejorar, probar y asegurar</h2>
+  <p class="eyebrow r">Día 2 · Hoy medimos al modelo</p>
+  <h2 class="h-l r" style="--d:.1s">No esperamos que acierte: registramos qué acierta, qué falla y qué inventa</h2>
   <div class="four">
-    <div class="f r" style="--d:.25s;--c:var(--alert)"><span class="k">Ejercicio 6 · 70 min</span><h3>Depurar</h3><p><span class="mono">e06-debug.js</span> trae <b>cuatro errores</b> sembrados. Un arreglo a la vez, recargando después de cada cambio. Nunca “arréglalo todo”.</p></div>
-    <div class="f r" style="--d:.4s;--c:var(--blue)"><span class="k">Ejercicio 7 · 60 min</span><h3>Refactorizar</h3><p>Mismo comportamiento, mejor código. El reto compara la salida completa, <b>incluido el empate</b> entre Ana y Marta.</p></div>
-    <div class="f r" style="--d:.55s;--c:var(--orange)"><span class="k">Ejercicio 8 · 75 min</span><h3>Probar</h3><p>La IA escribe las pruebas; tú decides si el error está en el código o en la prueba. <b>Tres bugs reales</b>: no ajustes la prueba para que pase.</p></div>
-    <div class="f r" style="--d:.7s;--c:var(--green)"><span class="k">Ejercicio 10 · 60 min</span><h3>Asegurar</h3><p>XSS por innerHTML, eval, credenciales en el código y permisos en localStorage. Demuestras el ataque en el archivo de práctica y lo corriges.</p></div>
+    <div class="f r" style="--d:.25s;--c:var(--alert)"><span class="k">Ejercicio 6 · 70 min</span><h3>¿Encuentra los 4 errores?</h3><p>Una función por prompt, respuesta de 3 líneas. Marcas cuáles encontró; <b>los que no, los cierras tú</b>.</p></div>
+    <div class="f r" style="--d:.4s;--c:var(--blue)"><span class="k">Ejercicio 7 · 60 min</span><h3>Refactorizar por pasos</h3><p>Un cambio por prompt y el reto después de cada uno. ¿En qué paso <b>rompió la salida sin avisar</b>?</p></div>
+    <div class="f r" style="--d:.55s;--c:var(--orange)"><span class="k">Ejercicio 8 · 75 min</span><h3>¿Bug o invento?</h3><p>Cinco funciones, <b>dos están bien a propósito</b>. ¿Distingue unas de otras o ve errores donde no hay?</p></div>
+    <div class="f r" style="--d:.7s;--c:var(--green)"><span class="k">Ejercicios 9 y 10</span><h3>Docs y seguridad</h3><p>¿Documenta el código o repite el comentario? ¿Cuántas de <b>cinco fallas sembradas</b> ve?</p></div>
   </div>
-  <p class="body r" style="--d:.9s">Y en medio, el ejercicio 9: documentar <b class="o">sin inventar</b>. La IA promete “valida la entrada” cuando el código no lo hace; tu trabajo es cazar esa afirmación.</p>
-  <aside class="notes">El momento clave del día es en el ejercicio 8, cuando una prueba falla porque el código está mal y no la prueba. Detente ahí. En el 10, la demo de XSS es solo sobre el archivo de práctica; deja claro que no se prueba en sitios ajenos.</aside>
+  <div class="loop r" style="--d:.9s">
+    <span>Prompt <b>pequeño</b></span><i>→</i><span>Registra: <b class="g">Acertó</b> · <b class="o">A medias</b> · <b class="a">Falló</b> · <b class="v">Inventó</b></span><i>→</i><span><b>Tú</b> corriges</span><i>→</i><span>El <b>reto</b> verifica</span><i>→</i><span>13:30 · <b>comparamos 0.5b, 1.5b y 3b</b></span>
+  </div>
+  <aside class="notes">El mensaje del día: que la IA falle no es que el ejercicio salió mal; es el dato que medimos. Cada ejercicio trae un recuadro «Observa» y al final de la pestaña Día 2 hay un resumen con conteos que se copia a la bitácora. Al cierre, tabla en el pizarrón: columnas por tamaño de modelo, filas E6 a E10.</aside>
 </section>
 
 <!-- 24 · DÍA 3 -->
