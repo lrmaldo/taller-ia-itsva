@@ -156,6 +156,44 @@ function servir() {
   await page.goto(`${base}#d1`);
   await page.waitForSelector("#app h2");
   check((await page.locator("#obs-resumen").count()) === 0, "el día 1 no muestra resumen de observación");
+
+  console.log("\n■ Registro de observación (día 3)");
+  const obsD3 = Object.values(T.ejercicios).filter((e) => e.dia === "d3" && e.observar);
+  const preg3 = obsD3.reduce((n, e) => n + e.observar.length, 0);
+  await page.goto(`${base}#d3`);
+  await page.waitForSelector("#obs-resumen");
+  check(obsD3.length === 3, `3 ejercicios del día 3 con «Observa» (${obsD3.length})`);
+  check((await page.locator("input[data-obs]").count()) === preg3 * 4, `${preg3} preguntas × 4 opciones en la página`);
+  await page.click('label:has(input[name="obs-e13-0"][value="invento"])');
+  const t3 = await page.textContent("#obs-texto");
+  check(/^Día 3 /.test(t3) && /E13 .*: ! /.test(t3) && !/E6 /.test(t3), "el resumen del día 3 solo incluye E11–E13");
+  check((await page.locator("[id^='sol-']").count()) === 0, "sin ?i=1 no se ve la solución del proyecto");
+  await page.goto(`${base}?i=1#d3`);
+  await page.waitForSelector("#obs-resumen");
+  check((await page.locator("#sol-e11").count()) === 1, "con ?i=1 se ve la solución de referencia del proyecto");
+
+  console.log("\n■ Proyecto: solución de referencia de E11 en el navegador");
+  const pp = await ctx.newPage();
+  pp.on("pageerror", (e) => errores.push("proyecto: " + e));
+  pp.on("dialog", (d) => { errores.push("proyecto: se abrió un diálogo (¿XSS?)"); d.dismiss(); });
+  await pp.route("**/practicas/proyecto/app.js", (r) => r.fulfill({ contentType: "text/javascript", body: T.ejercicios.e11.solucion }));
+  const urlProyecto = base.replace("index.html", "practicas/proyecto/index.html");
+  await pp.goto(urlProyecto);
+  await pp.evaluate(() => localStorage.setItem("taller-tareas", "{roto"));
+  await pp.reload();
+  check(await pp.isVisible("#vacio"), "con JSON corrupto no truena y muestra «Todavía no hay tareas»");
+  await pp.fill("#titulo", "<img src=x onerror=alert(1)>");
+  await pp.click("button[type=submit]");
+  await pp.fill("#titulo", "Estudiar");
+  await pp.press("#titulo", "Enter");
+  check((await pp.locator("#lista-tareas li").count()) === 2 && (await pp.locator("#lista-tareas img").count()) === 0, "agrega tareas y el título entra como texto, no como HTML");
+  await pp.locator("#lista-tareas li").nth(1).locator("input").check();
+  await pp.locator("#lista-tareas li").nth(0).locator("button").click();
+  await pp.reload();
+  const lis = pp.locator("#lista-tareas li");
+  check((await lis.count()) === 1 && (await lis.first().getAttribute("class")) === "completada" && (await lis.first().textContent()).includes("Estudiar"), "completar, borrar y persistir tras recargar");
+  check(await pp.isHidden("#vacio"), "«vacío» oculto cuando hay tareas");
+  await pp.close();
   check(!/cdn/i.test(fs.readFileSync(path.join(ROOT, "index.html"), "utf8")), "index.html sin CDN");
 
   console.log("\n■ Móvil (375 px)");

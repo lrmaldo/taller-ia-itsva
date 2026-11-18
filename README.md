@@ -34,6 +34,11 @@ Siete ejercicios traen un recuadro donde el alumno pega el código que le dio la
 ## Día 2: observar al modelo
 Los modelos locales chicos no resuelven de forma confiable «encuentra todos los errores» o «refactoriza todo», así que el día 2 no les pide eso: cada ejercicio (6 a 10) parte la tarea en preguntas pequeñas y trae un recuadro **Observa** donde el alumno marca, por pregunta, si el modelo *Acertó*, *A medias*, *Falló* o *Inventó*. El alumno cierra lo que el modelo no resolvió y el reto verifica su código. Al final de la pestaña Día 2 se arma un resumen con conteos y un texto para la bitácora; a las 13:30 se comparan los resultados por tamaño de modelo (0.5b / 1.5b / 3b). Las marcas se guardan en el navegador y no afectan el «Hecho».
 
+## Día 3: el proyecto por piezas
+El gestor de tareas se construye con cinco prompts (plan, almacenamiento, operaciones, interfaz y eventos), cada uno con una prueba de consola; el alumno registra en «Observa» qué pieza salió a la primera. Si una pieza falla dos veces, la escribe él y la marca como «Falló». La v2 (ejercicio 12) observa si las pruebas que escribe el modelo atrapan el error de su propia implementación, y el 13 si el modelo te corrige o te sigue la corriente. En modo instructor está la solución de referencia completa del proyecto.
+
+**Al cambiar contenido durante el taller** sube el número `?v=` de los tres archivos en `index.html`: GitHub Pages guarda los archivos en caché unos minutos y así los alumnos reciben la versión nueva al recargar.
+
 ## Modo instructor
 Agrega `?i=1` a la dirección (`.../index.html?i=1#d2`) para ver notas por día y por ejercicio, los bugs sembrados y la solución de referencia de cada reto (con botón para cargarla en el editor). No es seguridad: cualquiera que conozca el parámetro lo ve.
 

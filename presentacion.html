@@ -392,14 +392,14 @@ kbd{align-self:flex-start;font-family:var(--mono);font-size:20px;padding:6px 12p
       </ul>
     </div>
     <div class="day r" style="--d:.65s;--c:var(--green)">
-      <span class="k">Jueves 19 · Día 3</span><h3>Proyecto integrador, límites y ética</h3>
+      <span class="k">Jueves 19 · Día 3</span><h3>Proyecto por partes, límites y ética</h3>
       <ul>
-        <li><b>7:00</b>Flujo de trabajo: planear → por partes → probar</li>
-        <li class="hot"><b>7:30</b>Gestor de tareas v1 · Ejercicio 11</li>
-        <li class="hot"><b>9:45</b>v2: pruebas primero · 12</li>
-        <li class="hot"><b>12:00</b>Alucinaciones, privacidad y ética · 13</li>
-        <li><b>12:45</b>Demos de 3 minutos por equipo</li>
-        <li><b>13:30</b>Cierre y siguientes pasos</li>
+        <li><b>7:00</b>Flujo: planear → una pieza → probar → registrar</li>
+        <li class="hot"><b>7:30</b>Gestor de tareas, una pieza por prompt · Ejercicio 11</li>
+        <li class="hot"><b>9:45</b>¿Sus pruebas atrapan su error? · 12</li>
+        <li class="hot"><b>12:00</b>¿Te corrige o te sigue la corriente? · 13</li>
+        <li><b>12:45</b>Demos: qué pieza le costó más a la IA</li>
+        <li><b>13:30</b>Conclusión: ¿para qué sirve cada modelo?</li>
       </ul>
     </div>
   </div>
@@ -876,18 +876,20 @@ models:
 
 <!-- 24 · DÍA 3 -->
 <section class="slide">
-  <p class="eyebrow r">Día 3 · Proyecto integrador</p>
-  <h2 class="h-l r" style="--d:.1s">Una app completa, pero nunca de un solo jalón</h2>
+  <p class="eyebrow r">Día 3 · Proyecto por partes</p>
+  <h2 class="h-l r" style="--d:.1s">Cinco prompts, cinco piezas: ¿cuáles salen a la primera?</h2>
   <div class="path">
     <div class="wire"></div>
-    <div class="leg r" style="--d:.25s;--c:var(--slate)"><span class="dot">1</span><h3>Plan</h3><p>Pide solo el plan: qué hace cada función, qué recibe, qué estructura tiene una tarea. Máximo 20 líneas. Apruébalo tú.</p></div>
-    <div class="leg r" style="--d:.4s;--c:var(--blue)"><span class="dot">2</span><h3>Almacenamiento</h3><p><span class="mono">cargarTareas</span> y <span class="mono">guardarTareas</span>. Si el JSON está corrupto, devuelve [] sin tronar. Pruébalo en consola.</p></div>
-    <div class="leg r" style="--d:.55s;--c:var(--orange)"><span class="dot">3</span><h3>Operaciones</h3><p>Agregar, completar, borrar. Una pieza, recarga, verifica.</p></div>
-    <div class="leg r" style="--d:.7s;--c:var(--aqua)"><span class="dot">4</span><h3>Interfaz y eventos</h3><p>Pintar la lista con <span class="mono">textContent</span>, nunca innerHTML con el título. Enlazar el formulario.</p></div>
-    <div class="leg r" style="--d:.85s;--c:var(--green)"><span class="dot">5</span><h3>v2: pruebas primero</h3><p>Prioridades y filtros. Primero las pruebas, luego la implementación mínima. Ojo con <span class="mono">completada: false</span>.</p></div>
+    <div class="leg r" style="--d:.25s;--c:var(--slate)"><span class="dot">1</span><h3>Plan</h3><p>Solo el plan, máximo 15 líneas. <b>¿Esperó tu aprobación</b> o escribió todo?</p></div>
+    <div class="leg r" style="--d:.4s;--c:var(--blue)"><span class="dot">2</span><h3>Almacenamiento</h3><p><span class="mono">cargarTareas</span> con JSON corrupto: <span class="mono">'{roto'</span> debe dar <span class="mono">[]</span>.</p></div>
+    <div class="leg r" style="--d:.55s;--c:var(--orange)"><span class="dot">3</span><h3>Operaciones</h3><p>Agregar, completar, borrar. Pruebas en la consola antes de la interfaz.</p></div>
+    <div class="leg r" style="--d:.7s;--c:var(--aqua)"><span class="dot">4</span><h3>Interfaz</h3><p><span class="mono">textContent</span>, nunca innerHTML con el título. Lo aprendimos en el ejercicio 10.</p></div>
+    <div class="leg r" style="--d:.85s;--c:var(--alert)"><span class="dot">5</span><h3>Eventos</h3><p>La que conecta todo y <b>la que más falla</b>. Si falla dos veces, la escribes tú.</p></div>
   </div>
-  <p class="body r" style="--d:1.05s">Si la IA te entrega todo el archivo de golpe, la regresas a la pieza que ibas: <b class="o">lo que no puedes verificar, no lo puedes entregar</b>. Cierra con demos de 3 minutos: qué hace, qué le pidió a la IA y qué tuvo que corregir.</p>
-  <aside class="notes">El esqueleto está en practicas/proyecto. Revisa en cada equipo que cargarTareas tenga try/catch y que pintarTareas no use innerHTML con texto del usuario: conecta con el ejercicio 10. Prueba rápida: localStorage.setItem('taller-tareas','{roto') y recargar.</aside>
+  <div class="loop r" style="--d:1.05s">
+    <span>Una <b>pieza</b></span><i>→</i><span>Prueba en <b>consola</b></span><i>→</i><span>Registra en <b>Observa</b></span><i>→</i><span>v2: <b>¿sus pruebas atrapan su error?</b></span><i>→</i><span>Demos: <b>qué pieza costó más</b></span>
+  </div>
+  <aside class="notes">El esqueleto está en practicas/proyecto. Igual que ayer: que la IA falle es el dato. Si una pieza falla dos veces, la escriben ellos (la solución de referencia está en modo instructor) y la marcan como «Falló». Patrón típico: 2 y 3 salen, 5 falla. En la v2, lo valioso es ver que el modelo puede pasar sus propias pruebas con el bug adentro si no pensó en probar completada: false.</aside>
 </section>
 
 <!-- 25 · USO RESPONSABLE -->

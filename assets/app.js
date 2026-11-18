@@ -463,8 +463,13 @@ parent.postMessage({ tipo: "listo" }, "*");
     const exito = e.exito.map((x) => `<li class="flex gap-2"><span class="text-emerald-600">✓</span><span>${esc(x)}</span></li>`).join("");
     const archivos = (e.archivos || []).map((a) =>
       `<a href="practicas/${a}" download class="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-indigo-300 hover:bg-indigo-50">⬇ ${esc(a)}</a>`).join(" ");
-    const nota = instructor && e.instructor
-      ? `<div class="rounded-xl border border-amber-300 bg-amber-50 p-3.5 text-sm text-amber-900"><b>Instructor:</b> ${esc(e.instructor)}</div>` : "";
+    const nota = (instructor && e.instructor
+      ? `<div class="rounded-xl border border-amber-300 bg-amber-50 p-3.5 text-sm text-amber-900"><b>Instructor:</b> ${esc(e.instructor)}</div>` : "") +
+      (instructor && e.solucion && !e.reto ? `
+      <details class="rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5">
+        <summary class="cursor-pointer text-sm font-semibold text-amber-900">Solución de referencia (instructor)</summary>
+        <div class="mt-2">${bloqueCodigo("sol-" + id, e.solucion, "Solución")}</div>
+      </details>` : "");
     const etiquetaPrompt = id === "e13" ? "Preguntas y reflexión" : (id === "e4" ? "Comentarios y prompt" : (e.prompt.includes("PROMPT 1") ? "Prompts (uno a la vez)" : "Prompt"));
 
     const reto = e.reto ? `
